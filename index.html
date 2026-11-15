@@ -1,0 +1,1317 @@
+<!DOCTYPE html>
+<html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Práctica interactiva – TP4 ISO (ejercicios 1 a 29)</title><style>:root{
+  --bg:#f6f4ef; --paper:#fffdf8; --ink:#1d2433; --muted:#5b6475; --line:#ddd6c8;
+  --accent:#1f5f8b; --accent2:#b4532a; --ok:#2f7d4f; --bad:#b23a3a; --warn:#a46a00;
+  --pA:#2563a8; --pB:#b4532a; --pC:#2f7d4f; --hl:#fff1c9; --new:#ffe2d1;
+  --mono: ui-monospace, "SF Mono", "Cascadia Code", Consolas, "Liberation Mono", monospace;
+  --serif: "Iowan Old Style", "Palatino Linotype", Palatino, "Book Antiqua", Georgia, serif;
+  --sans: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.6 var(--sans)}
+header.top{background:#16263a;color:#f3efe6;padding:36px 24px 28px;border-bottom:4px solid var(--accent2)}
+header.top .wrap{max-width:1080px;margin:0 auto}
+header.top .kicker{font:600 12px/1 var(--sans);letter-spacing:.14em;text-transform:uppercase;color:#e7b48f}
+header.top h1{font:600 34px/1.15 var(--serif);margin:10px 0 8px}
+header.top p{margin:0;color:#c9d1dc;max-width:760px}
+nav.toc{position:sticky;top:0;z-index:5;background:rgba(246,244,239,.95);backdrop-filter:blur(6px);border-bottom:1px solid var(--line)}
+nav.toc .wrap{max-width:1080px;margin:0 auto;display:flex;gap:4px;flex-wrap:wrap;padding:8px 16px}
+nav.toc a{font:500 14px var(--sans);color:var(--ink);text-decoration:none;padding:6px 12px;border-radius:999px}
+nav.toc a:hover{background:#e8e2d5}
+main{max-width:1080px;margin:0 auto;padding:24px 16px 80px}
+section.card{scroll-margin-top:64px;background:var(--paper);border:1px solid var(--line);border-radius:14px;padding:28px 28px 22px;margin:28px 0;box-shadow:0 1px 0 rgba(0,0,0,.03)}
+h2{font:600 26px/1.2 var(--serif);margin:0 0 6px}
+h2 .num{color:var(--accent2);margin-right:8px}
+h3{font:600 19px/1.3 var(--serif);margin:26px 0 8px;color:#223552}
+h4{font:600 15px/1.3 var(--sans);margin:18px 0 6px;text-transform:uppercase;letter-spacing:.05em;color:var(--muted)}
+p{margin:8px 0}
+.lead{color:var(--muted);margin-bottom:14px}
+code,.mono{font-family:var(--mono);font-size:.92em}
+code{background:#efe9dc;padding:1px 5px;border-radius:4px}
+.box{border-left:4px solid var(--accent);background:#eef4f9;padding:12px 16px;border-radius:0 8px 8px 0;margin:14px 0}
+.box.warn{border-color:var(--warn);background:#fbf3e1}
+.box.ok{border-color:var(--ok);background:#ecf6ef}
+.box.bad{border-color:var(--bad);background:#fbecec}
+.box strong:first-child{display:block;margin-bottom:2px}
+.steps{counter-reset:s;list-style:none;padding:0;margin:10px 0}
+.steps>li{counter-increment:s;position:relative;padding:4px 0 8px 42px}
+.steps>li::before{content:counter(s);position:absolute;left:0;top:3px;width:28px;height:28px;border-radius:50%;background:var(--accent);color:#fff;font:600 14px/28px var(--sans);text-align:center}
+.formula{font:500 17px/1.5 var(--mono);background:#f2eee5;border:1px dashed #cbbfa7;border-radius:8px;padding:10px 14px;margin:10px 0;overflow-x:auto;white-space:nowrap}
+table{border-collapse:collapse}
+table.data{margin:10px 0;font-size:15px}
+table.data th,table.data td{border:1px solid var(--line);padding:6px 12px;text-align:center}
+table.data th{background:#efe9dc;font-weight:600}
+table.data td.l{text-align:left}
+.scroll{overflow-x:auto;margin:10px 0 6px;padding-bottom:4px}
+table.trace{font:13.5px/1 var(--mono)}
+table.trace th,table.trace td{border:1px solid #d9d1c1;min-width:34px;height:30px;text-align:center;padding:0 4px}
+table.trace thead th{background:#20344d;color:#fff;font-weight:600}
+table.trace thead th.t{background:#2c4563;color:#c9d6e6;font-weight:400;font-size:11px;height:20px}
+table.trace th.rowh{background:#efe9dc;color:var(--ink);position:sticky;left:0;z-index:1;min-width:58px;font-family:var(--sans);font-size:12px}
+table.trace td.new{background:var(--new);font-weight:700}
+table.trace td.hit{background:#dff0e4;font-weight:700}
+table.trace td.pf{color:var(--bad);font-weight:700}
+table.trace td.vic{font-size:11.5px;color:var(--muted)}
+table.trace td.end{background:#ececec;color:#888}
+table.trace th.endh{background:#6b7280}
+.pA{color:var(--pA)} .pB{color:var(--pB)} .pC{color:var(--pC)}
+.legend{font-size:13px;color:var(--muted);display:flex;gap:16px;flex-wrap:wrap;margin:4px 0 10px}
+.legend span i{display:inline-block;width:14px;height:14px;border-radius:3px;vertical-align:-2px;margin-right:5px;border:1px solid #ccc}
+.result{display:inline-block;background:#16263a;color:#fff;border-radius:8px;padding:6px 14px;font-weight:600;margin:6px 0}
+details{border:1px solid var(--line);border-radius:10px;padding:8px 14px;margin:10px 0;background:#fbf9f4}
+details summary{cursor:pointer;font-weight:600;color:var(--accent)}
+details ol{margin:8px 0;padding-left:22px;font-size:14.5px}
+details li{margin:3px 0}
+.grid2{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:16px}
+.tag{display:inline-block;font:600 11px/1 var(--sans);padding:4px 8px;border-radius:999px;background:#e5edf5;color:var(--accent);letter-spacing:.04em;text-transform:uppercase}
+.tag.r{background:#f7e3d9;color:var(--accent2)}
+footer{max-width:1080px;margin:0 auto;padding:0 16px 40px;color:var(--muted);font-size:13px}
+@media (max-width:640px){section.card{padding:20px 16px}header.top h1{font-size:26px}}
+@media print{nav.toc{display:none}section.card{break-inside:avoid-page;box-shadow:none}details{display:block}details>*{display:block}}
+.tabs{display:flex;gap:6px;flex-wrap:wrap;margin:22px 0 0}
+.tabs button{font:600 14px var(--sans);border:1px solid var(--line);background:#fff;color:var(--ink);padding:9px 16px;border-radius:10px 10px 0 0;cursor:pointer;border-bottom:none}
+.tabs button.on{background:var(--paper);color:var(--accent2);box-shadow:inset 0 3px 0 var(--accent2)}
+.panel{display:none;background:var(--paper);border:1px solid var(--line);border-radius:0 14px 14px 14px;padding:24px 26px 26px}
+.panel.on{display:block}
+.ctrl{display:flex;flex-wrap:wrap;gap:12px;align-items:flex-end;background:#f2eee5;border-radius:10px;padding:12px 14px;margin:6px 0 16px}
+.ctrl label{font:600 12px var(--sans);color:var(--muted);display:flex;flex-direction:column;gap:4px;text-transform:uppercase;letter-spacing:.04em}
+select,input[type=number],input[type=text]{font:15px var(--sans);padding:7px 9px;border:1px solid #c9bfab;border-radius:8px;background:#fff;color:var(--ink)}
+input[type=number]{width:92px}
+input.ok,select.ok{border-color:var(--ok);background:#ecf6ef}
+input.bad,select.bad{border-color:var(--bad);background:#fbecec}
+.btn{font:600 14px var(--sans);border:none;border-radius:8px;padding:9px 16px;cursor:pointer;background:var(--accent);color:#fff}
+.btn:hover{filter:brightness(1.1)}
+.btn.sec{background:#fff;color:var(--accent);border:1px solid var(--accent)}
+.btn.warm{background:var(--accent2)}
+.btn:disabled{opacity:.45;cursor:default}
+.enun{background:#fff;border:1px solid var(--line);border-radius:10px;padding:16px 18px;margin:10px 0}
+.enun .seq{font:600 17px/1.7 var(--mono);letter-spacing:.02em;word-break:break-word}
+.fb{margin:10px 0;padding:10px 14px;border-radius:8px;font-size:15px}
+.fb.ok{background:#ecf6ef;border-left:4px solid var(--ok)}
+.fb.bad{background:#fbecec;border-left:4px solid var(--bad)}
+.fb.info{background:#eef4f9;border-left:4px solid var(--accent)}
+.strip{display:flex;flex-wrap:wrap;gap:4px;margin:8px 0 14px}
+.chip{font:600 13px var(--mono);min-width:34px;padding:5px 6px;text-align:center;border-radius:6px;background:#efe9dc;border:1px solid #d8cfbd}
+.chip.cur{background:#16263a;color:#fff;border-color:#16263a;transform:scale(1.12)}
+.chip.f{background:#fbe1dc;border-color:#e2a99b}
+.chip.h{background:#dff0e4;border-color:#9fcfae}
+.chip.e{background:#e5e7eb;color:#6b7280}
+.mem{display:flex;flex-wrap:wrap;gap:10px;margin:8px 0}
+.frame{width:96px;border:2px solid #cfc5b1;border-radius:10px;background:#fff;text-align:center;padding:6px 4px 8px;cursor:pointer;transition:.15s}
+.frame:hover{border-color:var(--accent);transform:translateY(-2px)}
+.frame .fn{font:600 11px var(--sans);color:var(--muted);text-transform:uppercase}
+.frame .pg{font:700 22px/1.3 var(--mono);min-height:30px}
+.frame .hint{font:11.5px var(--sans);color:var(--accent);min-height:15px}
+.frame.dim{opacity:.35;cursor:not-allowed}
+.frame.good{border-color:var(--ok);background:#ecf6ef}
+.frame.wrong{border-color:var(--bad);background:#fbecec}
+.frame.empty .pg{color:#bbb}
+.qcard{border:1px solid var(--line);border-radius:10px;padding:14px 16px;margin:12px 0;background:#fff}
+.qcard .q{font-weight:600;margin-bottom:8px}
+.qcard label{display:block;padding:5px 8px;border-radius:6px;cursor:pointer}
+.qcard label:hover{background:#f4f0e6}
+.qcard label.ok{background:#ecf6ef}
+.qcard label.bad{background:#fbecec}
+.qcard .exp{display:none;margin-top:8px;font-size:14.5px;color:var(--muted)}
+.qcard.done .exp{display:block}
+.score{font:600 15px var(--sans);color:var(--accent2)}
+.addr{display:grid;grid-template-columns:120px repeat(4,auto);gap:8px 14px;align-items:center;margin:8px 0}
+.addr .h{font:600 12px var(--sans);color:var(--muted);text-transform:uppercase}
+@media(max-width:700px){.addr{grid-template-columns:repeat(2,auto)}.addr .h{display:none}.panel{padding:18px 14px}}
+.navwrap{margin:22px 0 14px}
+#navsel{display:none;width:100%;font-size:16px;padding:10px}
+.navgroups{display:grid;gap:8px}
+.ng{display:flex;flex-wrap:wrap;gap:6px;align-items:center}
+.ng>span{font:700 11px var(--sans);text-transform:uppercase;letter-spacing:.08em;color:var(--accent2);width:84px}
+.navbtn{font:600 13px var(--sans);border:1px solid var(--line);background:#fff;color:var(--ink);padding:7px 12px;border-radius:999px;cursor:pointer}
+.navbtn:hover{border-color:var(--accent)}
+.navbtn.on{background:#16263a;color:#fff;border-color:#16263a}
+.panel{border-radius:14px}
+.panel h3{margin-top:18px}
+.qgrid{display:grid;grid-template-columns:minmax(220px,max-content) 1fr;gap:8px 16px;align-items:center;margin:12px 0}
+.qgrid .ql{font-size:15px}
+.qgrid input[type=text]{width:190px}
+.qgrid select{max-width:100%}
+.unit{color:var(--muted)}
+.inl{flex-direction:row!important;align-items:center;gap:6px!important;text-transform:none!important;font-size:14px!important;color:var(--ink)!important;letter-spacing:0!important}
+label.chk{display:block;padding:5px 8px;border-radius:6px;cursor:pointer;font-size:15px}
+label.chk.ok{background:#ecf6ef} label.chk.bad{background:#fbecec}
+ol.cols{columns:2;column-gap:40px}
+pre.code{background:#16263a;color:#e8eef6;padding:14px 16px;border-radius:10px;font:14px/1.5 var(--mono);overflow-x:auto}
+.tracks{display:flex;flex-wrap:wrap;gap:6px;margin:10px 0}
+.trk{font:700 15px var(--mono);padding:8px 10px;border-radius:8px;border:2px solid #cfc5b1;background:#fff;cursor:pointer;min-width:52px}
+.trk:hover{border-color:var(--accent)}
+.trk.edge{border-style:dashed;color:var(--muted);font-weight:500}
+.trk small{font:10px var(--sans)}
+.dsvg{width:100%;max-width:780px;background:#fff;border:1px solid var(--line);border-radius:10px;margin:10px 0}
+table.data.bc td{padding:8px 10px}
+.buf{display:inline-block;position:relative;font:700 14px var(--mono);border:2px solid #9fb3c8;border-radius:6px;padding:4px 10px;margin:2px;background:#fff}
+.buf.busy{border-style:dashed;border-color:#b23a3a;background:#fbf0f0}
+.buf em{position:absolute;top:-8px;right:-8px;font:700 10px/16px var(--sans);font-style:normal;width:16px;height:16px;border-radius:50%;background:var(--accent2);color:#fff;text-align:center}
+.frame.resv{background:#fff4cc;border-color:#e0b100;cursor:not-allowed}
+table.trace td.resv{background:#ffe9a8}
+@media(max-width:760px){#navsel{display:block}.navgroups{display:none}.qgrid{grid-template-columns:1fr}ol.cols{columns:1}}
+</style></head><body>
+<header class="top"><div class="wrap">
+<div class="kicker">ISO / CSO · Práctica interactiva · Trabajo Práctico N° 4 completo</div>
+<h1>Práctica interactiva: ejercicios 1 a 29</h1>
+<p>Cada sección genera ejercicios nuevos al azar del estilo de cada ejercicio del TP, te corrige y te muestra la resolución.
+En reemplazo de páginas y en planificación de disco podés resolver <b>paso a paso</b>.</p>
+</div></header>
+<main>
+<div class="navwrap">
+  <select id="navsel" aria-label="Elegir ejercicio">
+    <optgroup label="Memoria virtual">
+      <option value="p-ad">Ej. 1 · Direcciones y fallos</option><option value="p-as">Ej. 2 · Asignación de marcos</option>
+      <option value="p-rp">Ej. 3–4 · Reemplazo (1 proceso)</option><option value="p-mp">Ej. 5–6 · Multiproceso / asincrónica</option>
+      <option value="p-ut">Ej. 7–8 · Uso de CPU y paginación</option><option value="p-mx">Ej. 9 · Matrices</option>
+      <option value="p-ws">Ej. 10 a–c · Working set</option><option value="p-pf">Ej. 10 d–e, 11 · PFF</option></optgroup>
+    <optgroup label="Discos">
+      <option value="p-dk">Ej. 12–14, 22 · Capacidad y tiempos</option><option value="p-ch">Ej. 15 · CHS ↔ LBA</option>
+      <option value="p-sc">Ej. 16–19 · Planificación de disco</option></optgroup>
+    <optgroup label="Archivos y caché">
+      <option value="p-cl">Ej. 20–21 · Clusters</option><option value="p-in">Ej. 24, 26, 27 · I-nodos</option>
+      <option value="p-lo">Ej. 28 · Ubicar un i-nodo</option><option value="p-bc">Ej. 29 · Buffer cache</option></optgroup>
+    <optgroup label="Teoría"><option value="p-qz">Ej. 3, 12, 13, 17, 23, 25 · Preguntas</option></optgroup>
+  </select>
+  <div class="navgroups">
+    <div class="ng"><span>Memoria</span>
+      <button class="navbtn on" data-p="p-ad">1 Direcciones</button><button class="navbtn" data-p="p-as">2 Asignación</button>
+      <button class="navbtn" data-p="p-rp">3–4 Reemplazo</button><button class="navbtn" data-p="p-mp">5–6 Multiproceso</button>
+      <button class="navbtn" data-p="p-ut">7–8 CPU / paginación</button><button class="navbtn" data-p="p-mx">9 Matrices</button>
+      <button class="navbtn" data-p="p-ws">10 Working set</button><button class="navbtn" data-p="p-pf">10–11 PFF</button></div>
+    <div class="ng"><span>Discos</span>
+      <button class="navbtn" data-p="p-dk">12–14, 22 Tiempos</button><button class="navbtn" data-p="p-ch">15 CHS ↔ LBA</button>
+      <button class="navbtn" data-p="p-sc">16–19 Planificación</button></div>
+    <div class="ng"><span>Archivos</span>
+      <button class="navbtn" data-p="p-cl">20–21 Clusters</button><button class="navbtn" data-p="p-in">24, 26, 27 I-nodos</button>
+      <button class="navbtn" data-p="p-lo">28 Ubicar i-nodo</button><button class="navbtn" data-p="p-bc">29 Buffer cache</button></div>
+    <div class="ng"><span>Teoría</span><button class="navbtn" data-p="p-qz">3, 12, 13, 17, 23, 25 Preguntas</button></div>
+  </div>
+</div>
+
+<div class="panel on" id="p-ad">
+  <h2>Ej. 1 · Traducción de direcciones y fallos de página</h2>
+  <p class="lead">página = DL div tamaño · desplazamiento = DL mod tamaño · DF = marco × tamaño + desplazamiento.</p>
+  <div class="enun" id="ad-enun"></div><div id="ad-q"></div>
+  <button class="btn warm" id="ad-new">Nuevo ejercicio</button>
+</div>
+
+<div class="panel" id="p-as">
+  <h2>Ej. 2 · Asignación fija: equitativa y proporcional</h2>
+  <p class="lead">Equitativo: m div p · Proporcional: V<sub>P</sub> × m / V<sub>T</sub> (parte entera).</p>
+  <div class="enun" id="as-enun"></div><div id="as-q"></div>
+  <button class="btn warm" id="as-new">Nuevo ejercicio</button>
+</div>
+
+<div class="panel" id="p-rp">
+  <h2>Ej. 3–4 · Algoritmos de reemplazo con un proceso</h2>
+  <div class="ctrl">
+    <label>Algoritmo<select id="rp-alg"><option value="R">Aleatorio</option><option value="FIFO">FIFO</option><option value="SC">Segunda Chance</option><option value="LRU">LRU</option><option value="OPT">Óptimo</option></select></label>
+    <label>Marcos<select id="rp-nf"><option value="R">Aleatorio</option><option>3</option><option>4</option><option>5</option></select></label>
+    <label>Modo<select id="rp-mode"><option value="step">Paso a paso (guiado)</option><option value="count">Responder cantidad de fallos</option></select></label>
+    <button class="btn warm" id="rp-new">Nuevo ejercicio</button>
+  </div>
+  <div class="enun" id="rp-enun"></div><div id="rp-work"></div>
+</div>
+
+<div class="panel" id="p-mp">
+  <h2>Ej. 5–6 · Varios procesos (global / local, modificaciones y descarga asincrónica)</h2>
+  <div class="ctrl">
+    <label>Política<select id="mp-pol"><option value="R">Aleatoria</option><option value="G">Dinámica + global</option><option value="L">Fija equitativa + local</option></select></label>
+    <label>Algoritmo<select id="mp-alg"><option value="R">Aleatorio</option><option value="FIFO">FIFO</option><option value="SC">Segunda Chance</option><option value="LRU">LRU</option></select></label>
+    <label>Modo<select id="mp-mode"><option value="step">Paso a paso (guiado)</option><option value="count">Responder cantidad de fallos</option></select></label>
+    <label class="inl"><input type="checkbox" id="mp-async"> Estilo ej. 6: "modifica" + marco reservado</label>
+    <button class="btn warm" id="mp-new">Nuevo ejercicio</button>
+  </div>
+  <div class="enun" id="mp-enun"></div><div id="mp-work"></div>
+</div>
+
+<div class="panel" id="p-ut">
+  <h2>Ej. 7–8 · Uso de CPU vs. dispositivo de paginación</h2>
+  <div class="enun" id="ut-enun"></div><div id="ut-q"></div>
+  <button class="btn warm" id="ut-new">Nuevo ejercicio</button>
+</div>
+
+<div class="panel" id="p-mx">
+  <h2>Ej. 9 · Fallos de página al recorrer matrices</h2>
+  <div class="enun" id="mx-enun"></div><div id="mx-q"></div>
+  <button class="btn warm" id="mx-new">Nuevo ejercicio</button>
+</div>
+
+<div class="panel" id="p-ws">
+  <h2>Ej. 10 a–c · Working set y thrashing</h2>
+  <p class="lead">WS(t, Δ) = páginas distintas referenciadas en los instantes t−Δ+1 … t.</p>
+  <div class="enun" id="ws-enun"></div><div id="ws-q"></div>
+  <button class="btn warm" id="ws-new">Nuevo ejercicio</button>
+</div>
+
+<div class="panel" id="p-pf">
+  <h2>Ej. 10 d–e, 11 · Tasa de fallos y PFF</h2>
+  <h3>Parte A · Tasa de fallos de un proceso (estilo 10 d–e)</h3>
+  <div class="enun" id="pf-enun"></div><div id="pf-q"></div>
+  <h3>Parte B · Escenarios PFF (estilo 11)</h3>
+  <div class="enun" id="pf2-enun"></div><div id="pf2-q"></div>
+  <button class="btn warm" id="pf-new">Nuevo ejercicio</button>
+</div>
+
+<div class="panel" id="p-dk">
+  <h2>Ej. 12–14, 22 · Capacidad y tiempos de acceso</h2>
+  <p class="lead">Latencia = media vuelta · secuencial = seek + latency + transfer × n · aleatorio = (seek + latency + transfer) × n.</p>
+  <div class="enun" id="dk-enun"></div><div id="dk-q"></div>
+  <button class="btn warm" id="dk-new">Nuevo ejercicio</button>
+</div>
+
+<div class="panel" id="p-ch">
+  <h2>Ej. 15 · Conversión CHS ↔ LBA</h2>
+  <div class="enun" id="ch-enun"></div><div id="ch-q"></div>
+  <button class="btn warm" id="ch-new">Nuevo ejercicio</button>
+</div>
+
+<div class="panel" id="p-sc">
+  <h2>Ej. 16–19 · Planificación de requerimientos a disco</h2>
+  <div class="ctrl">
+    <label>Algoritmo<select id="sc-alg"><option value="R">Aleatorio</option><option value="FCFS">FCFS</option><option value="SSTF">SSTF</option><option value="SCAN">SCAN</option><option value="LOOK">LOOK</option><option value="CSCAN">C-SCAN</option><option value="CLOOK">C-LOOK</option></select></label>
+    <label>Modo<select id="sc-mode"><option value="step">Paso a paso (elegir la próxima pista)</option><option value="count">Responder movimientos totales</option></select></label>
+    <label class="inl"><input type="checkbox" id="sc-arr" checked> Llegadas tardías (estilo 18–19)</label>
+    <button class="btn warm" id="sc-new">Nuevo ejercicio</button>
+  </div>
+  <div class="enun" id="sc-enun"></div><div id="sc-work"></div>
+</div>
+
+<div class="panel" id="p-cl">
+  <h2>Ej. 20–21 · Clusters</h2>
+  <div class="enun" id="cl-enun"></div><div id="cl-q"></div>
+  <button class="btn warm" id="cl-new">Nuevo ejercicio</button>
+</div>
+
+<div class="panel" id="p-in">
+  <h2>Ej. 24, 26, 27 · I-nodos: direcciones, tamaño máximo, bloques y tiempo</h2>
+  <p class="lead">n = tamaño de bloque / tamaño de dirección · máximo = (directas + n·simples + n²·dobles + n³·triples) × bloque.</p>
+  <div class="enun" id="in-enun"></div><div id="in-q"></div>
+  <button class="btn warm" id="in-new">Nuevo ejercicio</button>
+</div>
+
+<div class="panel" id="p-lo">
+  <h2>Ej. 28 · Ubicar un i-nodo en la tabla de i-nodos</h2>
+  <div class="enun" id="lo-enun"></div><div id="lo-q"></div>
+  <button class="btn warm" id="lo-new">Nuevo ejercicio</button>
+</div>
+
+<div class="panel" id="p-bc">
+  <h2>Ej. 29 · Buffer cache de Unix System V</h2>
+  <div class="enun" id="bc-enun"></div><div id="bc-q"></div>
+  <button class="btn warm" id="bc-new">Nuevo ejercicio</button>
+</div>
+
+<div class="panel" id="p-qz">
+  <h2>Preguntas de teoría (ej. 3, 12, 13, 17, 23, 25 y repaso)</h2>
+  <div class="ctrl"><label>Tema<select id="qz-topic"><option value="all">Todos</option><option value="mem">Memoria virtual</option><option value="disk">Discos</option><option value="fs">Archivos y buffer cache</option></select></label>
+  <button class="btn warm" id="qz-new">Otras preguntas</button></div>
+  <div id="qz-list"></div>
+  <div class="ctrl"><button class="btn" id="qz-chk">Corregir</button></div>
+  <div id="qz-fb"></div>
+</div>
+</main>
+<footer>Convenciones de la cátedra: las páginas nuevas van al primer marco libre; en Segunda Chance la página se carga con R=0; en planificación de disco los duplicados se atienden juntos (salvo FCFS) y el salto de C-SCAN/C-LOOK no se cuenta.
+Working set, PFF, i-nodos y buffer cache siguen la teoría estándar del curso (Unix System V).</footer>
+
+<script>
+// ===== Motor de reemplazo de páginas (convenciones de la cátedra) =====
+// ref: {p:'A', n:3, k:'A3', w:bool}  (w = "modifica": escritura)
+// fin de proceso: {end:true, p:'A'}
+// opts.reserve: 1 → descarga asincrónica con el último marco reservado
+class Mem {
+  constructor(nframes, algo, partitions, refs, opts) {
+    opts = opts || {};
+    this.n = nframes; this.algo = algo; this.part = partitions || null; this.refs = refs || [];
+    this.frames = new Array(nframes).fill(null);
+    this.R = {}; this.M = {}; this.queue = []; this.lastUse = {}; this.t = 0; this.pos = 0;
+    this.reserve = opts.reserve ? 1 : 0;
+    this.res = this.reserve ? nframes - 1 : -1;
+  }
+  allowedSlots(p) {
+    const base = this.part ? this.part[p] : [...Array(this.n).keys()];
+    return base.filter(i => i !== this.res);
+  }
+  futureRefs() { return this.refs.slice(this.pos + 1).filter(r => !r.end).map(r => r.k); }
+  analyze(ref) {
+    const res = { hit: false, free: [], valid: [], canonical: null, info: {} };
+    if (this.frames.includes(ref.k)) { res.hit = true; return res; }
+    const allowed = this.allowedSlots(ref.p);
+    res.free = allowed.filter(i => this.frames[i] === null);
+    if (res.free.length) { res.canonical = res.free[0]; res.valid = res.free.slice(); return res; }
+    const cands = allowed.map(i => this.frames[i]);
+    const qOrder = this.queue.filter(q => cands.includes(q));
+    let victim;
+    if (this.algo === 'FIFO') {
+      victim = qOrder[0]; res.info.order = qOrder; res.valid = [victim];
+    } else if (this.algo === 'LRU') {
+      victim = cands.reduce((a, b) => this.lastUse[a] <= this.lastUse[b] ? a : b);
+      res.info.last = Object.fromEntries(cands.map(c => [c, this.lastUse[c]]));
+      res.valid = [victim];
+    } else if (this.algo === 'OPT') {
+      const fut = this.futureRefs();
+      const nxt = c => { const i = fut.indexOf(c); return i < 0 ? Infinity : i; };
+      const best = Math.max(...cands.map(nxt));
+      res.valid = cands.filter(c => nxt(c) === best);
+      victim = qOrder.find(q => res.valid.includes(q));
+      res.info.next = Object.fromEntries(cands.map(c => [c, nxt(c) === Infinity ? null : this.t + 2 + nxt(c)]));
+    } else { // SC
+      const q = qOrder.slice(); const r = { ...this.R }; const cleared = [];
+      res.info.before = q.map(x => [x, this.R[x]]);
+      while (true) {
+        const h = q[0];
+        if (r[h] === 1) { r[h] = 0; cleared.push(h); q.push(q.shift()); }
+        else { victim = h; break; }
+      }
+      res.info.cleared = cleared; res.valid = [victim];
+    }
+    res.victim = victim;
+    res.info.async = !!(this.reserve && this.M[victim]);
+    res.info.resSlot = this.res;
+    res.canonical = this.frames.indexOf(victim);
+    res.valid = res.valid.map(v => this.frames.indexOf(v));
+    return res;
+  }
+  // slot = marco libre elegido o marco de la víctima
+  apply(ref, slot) {
+    this.t++;
+    const an = this.analyze(ref);
+    const step = { ref, fault: !an.hit, victim: null, info: an.info, t: this.t, placed: null };
+    if (an.hit) {
+      if (this.algo === 'SC') this.R[ref.k] = 1;
+      if (ref.w) this.M[ref.k] = 1;
+    } else {
+      if (slot === undefined || slot === null) slot = an.canonical;
+      const old = this.frames[slot];
+      let target = slot;
+      if (old !== null) {
+        step.victim = old;
+        if (this.algo === 'SC') {
+          for (const c of an.info.cleared) { this.R[c] = 0; this.queue.splice(this.queue.indexOf(c), 1); this.queue.push(c); }
+        }
+        if (this.reserve && this.M[old]) { // descarga asincrónica
+          target = this.res; this.res = slot; this.frames[slot] = null; step.asyncFrom = slot; step.asyncTo = target;
+        }
+        this.queue.splice(this.queue.indexOf(old), 1); delete this.R[old]; delete this.M[old];
+      }
+      this.frames[target] = ref.k; this.queue.push(ref.k); this.R[ref.k] = 0; this.M[ref.k] = ref.w ? 1 : 0;
+      step.placed = target;
+    }
+    this.lastUse[ref.k] = this.t;
+    step.frames = this.frames.slice(); step.R = { ...this.R }; step.M = { ...this.M }; step.res = this.res;
+    this.pos++;
+    return step;
+  }
+  endProc(p) {
+    for (let i = 0; i < this.n; i++) {
+      const k = this.frames[i];
+      if (k !== null && k.startsWith(p)) { this.frames[i] = null; this.queue.splice(this.queue.indexOf(k), 1); delete this.R[k]; delete this.M[k]; }
+    }
+    this.pos++;
+    return { ref: { end: true, p }, fault: false, frames: this.frames.slice(), R: { ...this.R }, M: { ...this.M }, res: this.res, end: true };
+  }
+  next(slot) {
+    const r = this.refs[this.pos];
+    return r.end ? this.endProc(r.p) : this.apply(r, slot);
+  }
+  done() { return this.pos >= this.refs.length; }
+}
+
+function runAll(refs, nframes, algo, partitions, opts) {
+  const m = new Mem(nframes, algo, partitions, refs, opts);
+  const steps = [];
+  while (!m.done()) steps.push(m.next());
+  return { faults: steps.filter(s => s.fault).length, steps };
+}
+const mkSingle = seq => seq.map(n => ({ p: '', n, k: String(n) }));
+// schedule: [p, n] demanda n páginas · [p, 'END'] termina · [p, 'MOD', pag] modifica la página
+function mkMulti(procs, schedule) {
+  const pos = {}; Object.keys(procs).forEach(p => pos[p] = 0);
+  const out = [];
+  for (const e of schedule) {
+    const [p, n] = e;
+    if (n === 'END') out.push({ end: true, p });
+    else if (n === 'MOD') out.push({ p, n: e[2], k: p + e[2], w: true });
+    else for (let i = 0; i < n; i++) { const v = procs[p][pos[p]++]; out.push({ p, n: v, k: p + v }); }
+  }
+  return out;
+}
+
+
+// ===== Planificación de disco (reglas de la cátedra) =====
+// arrivals: [[movimientos, [pistas]], ...] → entran en la primera decisión con acumulado >= movimientos
+function diskRun(algo, head, prev, queue, ntracks, arrivals) {
+  let q = queue.slice();
+  let arr = (arrivals || []).map(a => [a[0], a[1].slice()]).sort((a, b) => a[0] - b[0]);
+  let pos = head, total = 0, up = head > prev;
+  const moves = []; // {from,to,cost,kind:'req'|'edge'|'jump', pending:[...antes], arrived:[...]}
+  let lastArrived = [];
+  const admit = () => {
+    while (arr.length && total >= arr[0][0]) { q.push(...arr[0][1]); lastArrived.push(...arr[0][1]); arr.shift(); }
+  };
+  const go = (t, kind) => {
+    const cost = kind === 'jump' ? 0 : Math.abs(t - pos);
+    moves.push({ from: pos, to: t, cost, kind, pending: q.slice(), arrived: lastArrived, total: total + cost, up });
+    lastArrived = [];
+    total += cost; pos = t;
+  };
+  admit();
+  let guard = 0;
+  while ((q.length || arr.length) && guard++ < 1000) {
+    if (!q.length) { q.push(...arr[0][1]); lastArrived.push(...arr[0][1]); arr.shift(); }
+    if (algo === 'FCFS') {
+      const t = q[0]; go(t, 'req'); q.shift();
+    } else if (algo === 'SSTF') {
+      const t = q.reduce((a, b) => (Math.abs(b - pos) < Math.abs(a - pos) || (Math.abs(b - pos) === Math.abs(a - pos) && b < a)) ? b : a);
+      go(t, 'req'); q = q.filter(x => x !== t);
+    } else {
+      const ahead = q.filter(x => up ? x >= pos : x <= pos);
+      if (ahead.length) {
+        const t = up ? Math.min(...ahead) : Math.max(...ahead);
+        go(t, 'req'); q = q.filter(x => x !== t);
+      } else if (algo === 'SCAN') {
+        const edge = up ? ntracks - 1 : 0;
+        if (pos !== edge) go(edge, 'edge');
+        up = !up;
+      } else if (algo === 'LOOK') {
+        up = !up;
+      } else if (algo === 'CSCAN') {
+        const edge = up ? ntracks - 1 : 0;
+        if (pos !== edge) go(edge, 'edge');
+        go(up ? 0 : ntracks - 1, 'jump');
+      } else if (algo === 'CLOOK') {
+        const far = up ? Math.min(...q) : Math.max(...q);
+        go(far, 'jump'); q = q.filter(x => x !== far);
+      }
+    }
+    admit();
+  }
+  return { total, moves };
+}
+
+
+// ===================== utilidades =====================
+const $ = (s, r = document) => r.querySelector(s);
+const $$ = (s, r = document) => [...r.querySelectorAll(s)];
+const rnd = (a, b) => a + Math.floor(Math.random() * (b - a + 1));
+const pick = a => a[Math.floor(Math.random() * a.length)];
+const shuffle = a => { a = a.slice(); for (let i = a.length - 1; i > 0; i--) { const j = rnd(0, i); [a[i], a[j]] = [a[j], a[i]]; } return a; };
+const PC = { A: 'pA', B: 'pB', C: 'pC' };
+const ALG = { FIFO: 'FIFO', SC: 'Segunda Chance', LRU: 'LRU', OPT: 'Óptimo (OPT)' };
+const col = k => (k && PC[k[0]]) ? `<span class="${PC[k[0]]}">${k}</span>` : (k ?? '');
+const fmt = (x, d = 4) => { const r = Math.round(x * 10 ** d) / 10 ** d; return r.toLocaleString('es-AR', { maximumFractionDigits: d }); };
+const num = v => { if (v === undefined || v === null) return NaN; v = String(v).trim().replace(/\s/g, ''); if (v === '') return NaN; if (v.includes(',')) v = v.replace(/\./g, '').replace(',', '.'); else if ((v.match(/\./g) || []).length > 1) v = v.replace(/\./g, ''); return parseFloat(v); };
+const close = (a, b, rel = 0.005) => isFinite(a) && Math.abs(a - b) <= Math.max(Math.abs(b) * rel, 0.011);
+const parseSet = v => [...new Set(String(v).split(/[^0-9]+/).filter(Boolean).map(Number))].sort((a, b) => a - b);
+const sameSet = (a, b) => a.length === b.length && a.every((x, i) => x === b[i]);
+function mark(el, ok) { el.classList.remove('ok', 'bad'); el.classList.add(ok ? 'ok' : 'bad'); return ok; }
+function feedback(el, good, total) { el.innerHTML = `<div class="fb ${good === total ? 'ok' : 'bad'}">${good === total ? `¡Todo correcto! (${good} de ${total})` : `Correctos: ${good} de ${total}. Los campos en rojo están mal.`}</div>`; }
+// genera una secuencia con algo de localidad, sin repetir la misma página dos veces seguidas
+function locSeq(len, maxp, prep) { const s = []; for (let i = 0; i < len; i++) { let v; let g = 0; do { v = i > 0 && Math.random() < prep ? s[Math.max(0, i - rnd(2, 4))] : rnd(1, maxp); } while (i > 0 && v === s[i - 1] && g++ < 20); s.push(v); } return s; }
+const mib = 1048576;
+
+// ===================== navegación =====================
+function showPanel(id) {
+  $$('.navbtn').forEach(x => x.classList.toggle('on', x.dataset.p === id));
+  $$('.panel').forEach(p => p.classList.toggle('on', p.id === id));
+  $('#navsel').value = id;
+  window.scrollTo({ top: $('main').offsetTop - 10, behavior: 'smooth' });
+}
+$$('.navbtn').forEach(b => b.onclick = () => showPanel(b.dataset.p));
+$('#navsel').onchange = e => showPanel(e.target.value);
+
+// ===================== tabla de traza (memoria) =====================
+function traceTable(steps, nframes, algo, rowNames) {
+  rowNames = rowNames || [...Array(nframes)].map((_, i) => 'F' + (i + 1));
+  let h = '<div class="scroll"><table class="trace"><thead><tr><th class="rowh">Ref.</th>';
+  for (const s of steps) h += s.end ? `<th class="endh">${s.ref.p}<br><small>fin</small></th>` : `<th>${s.ref.k}${s.ref.w ? '<sup>M</sup>' : ''}</th>`;
+  h += '</tr><tr><th class="rowh t">t</th>';
+  for (const s of steps) h += `<th class="t">${s.end ? '' : s.t}</th>`;
+  h += '</tr></thead><tbody>';
+  for (let i = 0; i < nframes; i++) {
+    h += `<tr><th class="rowh">${rowNames[i]}</th>`;
+    for (const s of steps) {
+      const k = s.frames[i];
+      let c = s.end ? 'end' : (k === s.ref.k ? (s.fault ? 'new' : 'hit') : '');
+      if (s.res === i) c += ' resv';
+      const star = algo === 'SC' && k && s.R[k] === 1 ? '*' : '';
+      const m = k && s.M && s.M[k] ? '<sup>M</sup>' : '';
+      h += `<td class="${c}">${k ? col(k) + m + star : (s.res === i ? '<small>res</small>' : '')}</td>`;
+    }
+    h += '</tr>';
+  }
+  h += '<tr><th class="rowh">PF</th>' + steps.map(s => `<td class="pf">${s.fault ? 'X' : ''}</td>`).join('') + '</tr>';
+  h += '<tr><th class="rowh">Víctima</th>' + steps.map(s => `<td class="vic">${s.victim || ''}</td>`).join('') + '</tr>';
+  return h + '</tbody></table></div>';
+}
+const LEGEND = `<div class="legend"><span><i style="background:var(--new)"></i>cargada (fallo)</span><span><i style="background:#dff0e4"></i>acierto</span><span><b class="mono">*</b> R=1 (Segunda Chance)</span><span><b class="mono">M</b> modificada</span><span><i style="background:#ffe9a8"></i>marco reservado</span></div>`;
+
+function explainVictim(step, algo) {
+  const inf = step.info || {}, v = step.victim;
+  if (!v) return '';
+  let s = '';
+  if (algo === 'FIFO') s = `Cola FIFO (vieja → nueva): ${inf.order.join(', ')}. Sale <b>${v}</b>, la que entró primero.`;
+  else if (algo === 'LRU') s = 'Última referencia: ' + Object.entries(inf.last).sort((a, b) => a[1] - b[1]).map(([k, t]) => `${k}→t${t}`).join(', ') + `. Sale <b>${v}</b>, la usada hace más tiempo.`;
+  else if (algo === 'OPT') s = 'Próximo uso: ' + Object.entries(inf.next).sort((a, b) => (a[1] ?? 1e9) - (b[1] ?? 1e9)).map(([k, t]) => `${k}→${t === null ? 'nunca' : 't' + t}`).join(', ') + `. Sale <b>${v}</b> (la más lejana o que no vuelve).`;
+  else if (algo === 'SC') {
+    const bef = inf.before.map(([k, r]) => k + (r ? '*' : '')).join(', ');
+    s = inf.cleared.length
+      ? `Cola: ${bef}. ${inf.cleared.join(', ')} con R=1 → R=0 y al final de la cola. Primera con R=0: <b>${v}</b>.`
+      : `Cola: ${bef}. La primera ya tiene R=0 → sale <b>${v}</b>.`;
+  }
+  if (inf.async) s += ` <b>${v}</b> está modificada: la página nueva va al marco reservado (F${inf.resSlot + 1}) y el marco de ${v} pasa a ser el reservado después de la descarga.`;
+  return s;
+}
+function decisionsList(steps, algo) {
+  const li = steps.filter(s => s.victim).map(s => `<li>t=${s.t}, llega <b>${s.ref.k}</b>: ${explainVictim(s, algo)}</li>`).join('');
+  return li ? `<details open><summary>Razonamiento de cada reemplazo</summary><ol>${li}</ol></details>` : '';
+}
+
+// ===================== componente: reemplazo paso a paso =====================
+function Stepper(root, cfg) {
+  const m = new Mem(cfg.nframes, cfg.algo, cfg.part, cfg.refs, cfg.opts);
+  const steps = []; let ok = 0, tot = 0, showHint = false, locked = false;
+  root._m = m;
+  root.innerHTML = `
+    <div class="strip"></div>
+    <div class="fb info msg"></div>
+    <div style="display:flex;gap:10px;flex-wrap:wrap;margin:8px 0">
+      <button class="btn act-hit">Ya está en memoria (acierto)</button>
+      <button class="btn sec act-hint">Mostrar pista</button>
+      <button class="btn sec act-next" style="display:none">Siguiente →</button>
+      <span class="score" style="align-self:center"></span>
+    </div>
+    <div class="mem"></div>
+    <div class="fb fbk" style="display:none"></div>
+    <h4>Tabla que se va armando</h4><div class="tbl"></div>`;
+  const strip = $('.strip', root), mem = $('.mem', root), msg = $('.msg', root), fbk = $('.fbk', root);
+  const bHit = $('.act-hit', root), bNext = $('.act-next', root), bHint = $('.act-hint', root), score = $('.score', root);
+  function hintFor(k) {
+    if (!showHint || !k) return '';
+    const q = cfg.part ? m.queue.filter(x => x[0] === k[0]) : m.queue;
+    if (cfg.algo === 'FIFO') return 'cola #' + (q.indexOf(k) + 1);
+    if (cfg.algo === 'LRU') return 'últ. uso t' + m.lastUse[k];
+    if (cfg.algo === 'SC') return `cola #${q.indexOf(k) + 1} · R=${m.R[k]}`;
+    if (cfg.algo === 'OPT') { const fut = m.futureRefs(); const i = fut.indexOf(k); return i < 0 ? 'no vuelve' : 'próx. t' + (m.t + 2 + i); }
+    return '';
+  }
+  function render(marks = {}) {
+    strip.innerHTML = cfg.refs.map((r, i) => {
+      let c = 'chip';
+      if (i === m.pos && !m.done()) c += ' cur';
+      else if (i < steps.length) c += steps[i].end ? ' e' : steps[i].fault ? ' f' : ' h';
+      return `<span class="${c}">${r.end ? r.p + ' fin' : r.k + (r.w ? 'ᴹ' : '')}</span>`;
+    }).join('');
+    const cur = m.done() ? null : cfg.refs[m.pos];
+    const allowed = cur && !cur.end ? m.allowedSlots(cur.p) : [...Array(cfg.nframes).keys()];
+    mem.innerHTML = m.frames.map((k, i) => {
+      const isRes = i === m.res;
+      let c = 'frame' + (k ? '' : ' empty') + (allowed.includes(i) ? '' : ' dim') + (isRes ? ' resv' : '') + (marks[i] ? ' ' + marks[i] : '');
+      const star = cfg.algo === 'SC' && k && m.R[k] === 1 ? '*' : '';
+      const mm = k && m.M[k] ? '<sup>M</sup>' : '';
+      return `<div class="${c}" data-i="${i}"><div class="fn">${(cfg.rowNames || [])[i] || 'F' + (i + 1)}${isRes ? ' · reservado' : ''}</div><div class="pg">${k ? col(k) + mm + star : '—'}</div><div class="hint">${hintFor(k)}</div></div>`;
+    }).join('');
+    $$('.frame', mem).forEach(f => f.onclick = () => judge(+f.dataset.i));
+    score.textContent = tot ? `Decisiones correctas: ${ok}/${tot}` : '';
+    $('.tbl', root).innerHTML = steps.length ? LEGEND + traceTable(steps, cfg.nframes, cfg.algo, cfg.rowNames) : '<p class="lead">Todavía no hay pasos.</p>';
+    if (m.done()) {
+      const f = steps.filter(s => s.fault).length;
+      msg.innerHTML = `<b>¡Terminaste!</b> Total de fallos de página: <b>${f}</b>. Acertaste ${ok} de ${tot} decisiones.`;
+      bHit.disabled = true; bNext.style.display = 'none';
+    } else if (cur.end) {
+      msg.innerHTML = `<b>${cur.p} termina</b>: se liberan todos sus marcos.`;
+      bHit.disabled = true; bNext.style.display = ''; locked = true;
+    } else if (!locked) {
+      msg.innerHTML = `${cur.w ? `<b>${cur.p}</b> modifica la página` : 'Llega la referencia'} <b style="font-size:18px">${col(cur.k)}</b> (t=${m.t + 1}). Si ya está cargada, tocá <i>acierto</i>; si es un fallo, <b>tocá el marco libre donde se carga o la página víctima</b>.`;
+      bHit.disabled = false;
+    }
+  }
+  function judge(userSlot) {
+    if (locked || m.done()) return;
+    const cur = cfg.refs[m.pos];
+    const an = m.analyze(cur);
+    if (userSlot !== null && !m.allowedSlots(cur.p).includes(userSlot)) {
+      fbk.style.display = ''; fbk.className = 'fb bad fbk'; fbk.innerHTML = 'Ese marco no se puede usar para esta página (es el reservado o pertenece a otro proceso).'; return;
+    }
+    tot++;
+    let correct, text;
+    if (an.hit) {
+      correct = userSlot === null;
+      text = correct ? `Correcto: <b>${cur.k}</b> ya estaba en memoria.${cur.w ? ' Se marca M=1.' : ''} ${cfg.algo === 'SC' ? 'Su bit R pasa a 1 (*).' : cfg.algo === 'LRU' ? 'Se actualiza su último uso.' : 'En ' + ALG[cfg.algo] + ' un acierto no cambia el orden.'}`
+        : `No: <b>${cur.k}</b> ya estaba en memoria → es un acierto, no un fallo.`;
+    } else if (an.free.length) {
+      correct = userSlot !== null && an.free.includes(userSlot);
+      text = correct ? 'Correcto: fallo de página y había un marco libre.' : `Es un <b>fallo</b> y hay marcos libres: la página va al primer marco libre (F${an.free[0] + 1}) sin reemplazar a nadie.`;
+    } else {
+      correct = userSlot !== null && an.valid.includes(userSlot);
+      const tmp = { victim: m.frames[an.canonical], info: an.info };
+      text = (correct ? 'Correcto. ' : `No. ${userSlot === null ? 'Es un fallo de página. ' : ''}La víctima era <b>${tmp.victim}</b>. `) + explainVictim(tmp, cfg.algo);
+    }
+    if (correct) ok++;
+    const slot = an.hit ? null : (correct ? userSlot : an.canonical);
+    const st = m.next(slot);
+    steps.push(st);
+    const marks = {};
+    if (st.placed !== null && st.placed !== undefined) marks[st.placed] = 'good';
+    if (!correct && userSlot !== null && userSlot !== slot) marks[userSlot] = 'wrong';
+    fbk.style.display = ''; fbk.className = 'fb fbk ' + (correct ? 'ok' : 'bad'); fbk.innerHTML = text;
+    locked = true; bHit.disabled = true; bNext.style.display = m.done() ? 'none' : '';
+    render(marks);
+    if (m.done()) locked = false;
+  }
+  bHit.onclick = () => judge(null);
+  bNext.onclick = () => {
+    const cur = cfg.refs[m.pos];
+    if (cur && cur.end) steps.push(m.next());
+    locked = false; fbk.style.display = 'none'; bNext.style.display = 'none';
+    render();
+  };
+  bHint.onclick = () => { showHint = !showHint; bHint.textContent = showHint ? 'Ocultar pista' : 'Mostrar pista'; render(); };
+  render();
+}
+
+// modo "contar fallos" / "paso a paso" para un ejercicio de reemplazo
+function replMode(pref, S, md) {
+  const w = $('#' + pref + '-work');
+  if (md === 'step') { Stepper(w, { refs: S.refs, nframes: S.nf, algo: S.algo, part: S.part, rowNames: S.rowNames, opts: S.opts }); return; }
+  w.innerHTML = `<div class="ctrl"><label>Fallos de página<input type="number" class="ans"></label>
+    ${S.tpf ? `<label>Tiempo total (${S.unit})<input type="text" class="time" placeholder="ej: 1,6"></label>` : ''}
+    <button class="btn chk">Corregir</button><button class="btn sec show">Ver solución</button></div><div class="fbx"></div><div class="solx"></div>`;
+  $('.chk', w).onclick = () => {
+    const a = $('.ans', w); let good = 0, tot = 1;
+    if (mark(a, a.value !== '' && +a.value === S.res.faults)) good++;
+    if (S.tpf) { tot++; const t = $('.time', w); if (mark(t, close(num(t.value), S.res.faults * S.tpf, 1e-6))) good++; }
+    feedback($('.fbx', w), good, tot);
+  };
+  $('.show', w).onclick = () => {
+    $('.solx', w).innerHTML = `<p><span class="result">${S.res.faults} fallos</span>${S.tpf ? ` &nbsp; Tiempo = ${S.res.faults} × ${fmt(S.tpf)} ${S.unit} = <b>${fmt(S.res.faults * S.tpf)} ${S.unit}</b>` : ''}</p>` +
+      (S.perProc || '') + LEGEND + traceTable(S.res.steps, S.nf, S.algo, S.rowNames) + decisionsList(S.res.steps, S.algo);
+  };
+}
+
+// helper: tabla de inputs y corrección genérica
+// items: [{label, ans, kind:'int'|'num'|'set'|'sel', opts, rel}]
+function qform(root, items, solHtml) {
+  root._items = items;
+  root.innerHTML = '<div class="qgrid">' + items.map((it, i) => {
+    let inp;
+    if (it.kind === 'sel') inp = `<select data-i="${i}"><option value="">—</option>${it.opts.map(o => `<option>${o}</option>`).join('')}</select>`;
+    else inp = `<input type="text" data-i="${i}" placeholder="${it.ph || ''}">`;
+    return `<div class="ql">${it.label}</div><div>${inp}${it.unit ? ` <small class="unit">${it.unit}</small>` : ''}</div>`;
+  }).join('') + `</div><div class="ctrl"><button class="btn chk">Corregir</button><button class="btn sec show">Ver solución</button></div><div class="fbx"></div><div class="solx"></div>`;
+  $('.chk', root).onclick = () => {
+    let g = 0;
+    items.forEach((it, i) => {
+      const el = $(`[data-i="${i}"]`, root); const v = el.value;
+      let ok;
+      if (it.kind === 'sel') ok = v === it.ans;
+      else if (it.kind === 'set') ok = v.trim() !== '' && sameSet(parseSet(v), it.ans);
+      else if (it.kind === 'int') ok = num(v) === it.ans;
+      else ok = close(num(v), it.ans, it.rel ?? 0.005);
+      if (mark(el, ok)) g++;
+    });
+    feedback($('.fbx', root), g, items.length);
+  };
+  $('.show', root).onclick = () => { $('.solx', root).innerHTML = `<div class="box"><strong>Solución</strong>${solHtml}</div>`; };
+}
+
+// ===================== Ej. 1 · Direcciones =====================
+function genAddr() {
+  const ps = pick([256, 512, 1024, 2048, 4096]);
+  const np = rnd(5, 8);
+  const frames = shuffle([...Array(16).keys()]);
+  let rows;
+  do {
+    rows = [...Array(np)].map((_, i) => { const v = Math.random() < .6 ? 1 : 0; return { v, r: v ? rnd(0, 1) : 0, m: v ? rnd(0, 1) : 0, f: v ? frames[i] : null }; });
+  } while (rows.filter(r => r.v).length < 2 || rows.filter(r => !r.v).length < 1);
+  const valid = rows.map((r, i) => i).filter(i => rows[i].v), inval = rows.map((r, i) => i).filter(i => !rows[i].v);
+  const kinds = shuffle(['hit', 'fault', 'invalid', pick(['hit', 'fault', 'hit'])]);
+  const addrs = kinds.map(k => {
+    const pg = k === 'hit' ? pick(valid) : k === 'fault' ? pick(inval) : np + rnd(0, 6);
+    const off = rnd(0, ps - 1);
+    return { dl: pg * ps + off, pg, off, kind: k, df: k === 'hit' ? rows[pg].f * ps + off : null };
+  });
+  const tbl = '<table class="data"><tr><th>Página</th><th>V</th><th>R</th><th>M</th><th>Marco</th></tr>' +
+    rows.map((r, i) => `<tr><td>${i}</td><td>${r.v}</td><td>${r.r}</td><td>${r.m}</td><td>${r.f ?? '–'}</td></tr>`).join('') + '</table>';
+  $('#ad-enun').innerHTML = `<p>Tamaño de página: <b>${ps} bytes</b> · cada dirección referencia 1 byte · los marcos son contiguos desde la dirección física 0.</p>${tbl}
+  <p>Para cada dirección lógica indicá página, desplazamiento, qué ocurre y (si no hay fallo) la dirección física.</p>`;
+  const KO = { hit: 'Sin fallo (V=1)', fault: 'Fallo de página', invalid: 'Dirección inválida' };
+  const items = [];
+  addrs.forEach(a => {
+    items.push({ label: `<b class="mono">${a.dl}</b> → página`, kind: 'int', ans: a.pg });
+    items.push({ label: `<b class="mono">${a.dl}</b> → desplazamiento`, kind: 'int', ans: a.off });
+    items.push({ label: `<b class="mono">${a.dl}</b> → resultado`, kind: 'sel', opts: Object.values(KO), ans: KO[a.kind] });
+    if (a.kind === 'hit') items.push({ label: `<b class="mono">${a.dl}</b> → dirección física`, kind: 'int', ans: a.df });
+  });
+  const bits = Math.log2(ps);
+  qform($('#ad-q'), items, `${ps} = 2<sup>${bits}</sup>: el desplazamiento son los ${bits} bits bajos. El proceso tiene páginas 0 a ${np - 1}, así que las direcciones válidas van de 0 a ${np * ps - 1}.<ol>` +
+    addrs.map(a => `<li><b>${a.dl}</b> = ${a.pg}×${ps} + ${a.off} → página ${a.pg}, desplazamiento ${a.off}. ` +
+      (a.kind === 'invalid' ? `La página ${a.pg} no existe en la tabla → <b>dirección inválida</b> (no es fallo de página).`
+        : a.kind === 'fault' ? `V=0 → <b>fallo de página</b>.`
+          : `V=1, marco ${rows[a.pg].f} → DF = ${rows[a.pg].f}×${ps} + ${a.off} = <b>${a.df}</b>.`) + '</li>').join('') + '</ol>');
+}
+
+// ===================== Ej. 2 · Asignación =====================
+function genAsig() {
+  const p = rnd(3, 5);
+  const need = [...Array(p)].map(() => rnd(4, 30));
+  const VT = need.reduce((a, b) => a + b, 0);
+  const m = rnd(Math.max(p * 2, Math.floor(VT * .4)), Math.floor(VT * .85));
+  const eq = Math.floor(m / p);
+  const prop = need.map(v => Math.floor(v * m / VT));
+  const sum = prop.reduce((a, b) => a + b, 0);
+  $('#as-enun').innerHTML = `<p>Hay <b>${m} marcos</b> y asignación <b>fija</b>. Calculá cuántos marcos recibe cada proceso con reparto equitativo y con reparto proporcional (parte entera).</p>` +
+    `<table class="data"><tr><th>Proceso</th>${need.map((_, i) => `<td>${i + 1}</td>`).join('')}</tr><tr><th>Páginas requeridas</th>${need.map(v => `<td>${v}</td>`).join('')}</tr></table>`;
+  const items = [{ label: 'Equitativo: marcos por proceso', kind: 'int', ans: eq }];
+  need.forEach((v, i) => items.push({ label: `Proporcional: proceso ${i + 1}`, kind: 'int', ans: prop[i] }));
+  items.push({ label: 'Marcos sin asignar en el proporcional', kind: 'int', ans: m - sum });
+  items.push({ label: '¿Cuál reparto es más eficiente?', kind: 'sel', opts: ['Equitativo', 'Proporcional'], ans: 'Proporcional' });
+  const over = need.map((v, i) => eq > v ? `P${i + 1} (necesita ${v}, recibe ${eq})` : null).filter(Boolean);
+  qform($('#as-q'), items, `<b>Equitativo:</b> ${m} div ${p} = <b>${eq}</b> para cada uno${m % p ? ` (sobran ${m % p})` : ''}.${over.length ? ' Marcos desperdiciados en: ' + over.join('; ') + '.' : ''}<br>
+  <b>Proporcional:</b> V<sub>T</sub> = ${need.join(' + ')} = ${VT}.<ul>` + need.map((v, i) => `<li>P${i + 1}: ${v} × ${m} / ${VT} = ${fmt(v * m / VT, 2)} → <b>${prop[i]}</b></li>`).join('') +
+    `</ul>Total ${sum} → quedan <b>${m - sum}</b> sin asignar. El proporcional se ajusta a lo que necesita cada proceso, por eso es más eficiente.`);
+}
+
+// ===================== Ej. 3–4 · Reemplazo (1 proceso) =====================
+let RP;
+function genRep() {
+  let algo = $('#rp-alg').value; if (algo === 'R') algo = pick(['FIFO', 'SC', 'LRU', 'OPT']);
+  let nf = $('#rp-nf').value; nf = nf === 'R' ? rnd(3, 5) : +nf;
+  const len = rnd(14, 22), maxp = nf + rnd(2, 5);
+  const seq = locSeq(len, maxp, .3);
+  const tpf = pick([0.1, 0.2, 0.5, 2, 5, 10]); const unit = tpf >= 1 ? 'ms' : 's';
+  const refs = mkSingle(seq);
+  RP = { algo, nf, refs, res: runAll(refs, nf, algo), tpf, unit };
+  $('#rp-enun').innerHTML = `<p>Secuencia de referencias:</p><div class="seq">${seq.join(', ')}</div>
+  <p>Disponés de <b>${nf} marcos</b> (asignación dinámica, reemplazo global). Algoritmo: <b>${ALG[algo]}</b>. Cada atención de fallo tarda <b>${fmt(tpf)} ${unit}</b>.</p>`;
+  replMode('rp', RP, $('#rp-mode').value);
+}
+
+// ===================== Ej. 5–6 · Multiproceso =====================
+let MP;
+function genMulti() {
+  const asy = $('#mp-async').checked;
+  let algo = $('#mp-alg').value; if (algo === 'R') algo = pick(['FIFO', 'SC', 'LRU']);
+  let pol = asy ? 'G' : $('#mp-pol').value; if (pol === 'R') pol = pick(['G', 'L']);
+  const names = ['A', 'B', 'C'];
+  const procs = {};
+  names.forEach(p => { procs[p] = locSeq(rnd(5, 8), 6, .35); });
+  const rem = {}, seen = {}; names.forEach(p => { rem[p] = procs[p].length; seen[p] = []; });
+  const sched = []; let last = null;
+  while (names.some(p => rem[p] > 0)) {
+    const opts = names.filter(p => rem[p] > 0 && p !== last); const p = opts.length ? pick(opts) : names.find(q => rem[q] > 0);
+    const n = Math.min(rem[p], rnd(1, 3));
+    const start = procs[p].length - rem[p];
+    sched.push([p, n]); seen[p].push(...procs[p].slice(start, start + n)); rem[p] -= n; last = p;
+    if (asy && Math.random() < .4) { const q = pick(names.filter(x => seen[x].length)); sched.push([q, 'MOD', pick(seen[q])]); }
+  }
+  for (const p of shuffle(names)) {
+    let li = -1; sched.forEach((e, i) => { if (e[0] === p && e[1] !== 'END') li = i; });
+    sched.splice(rnd(li + 1, Math.min(sched.length, li + 3)), 0, [p, 'END']);
+  }
+  const refs = mkMulti(procs, sched);
+  let nf, part = null, rowNames = null, polTxt, opts = null;
+  if (pol === 'G') {
+    nf = rnd(asy ? 5 : 4, asy ? 7 : 6);
+    polTxt = `Asignación <b>dinámica</b> y reemplazo <b>global</b>, ${nf} marcos.`;
+    if (asy) { opts = { reserve: 1 }; polTxt += ` Se reserva <b>1 marco</b> (F${nf}) para la descarga asincrónica de páginas modificadas.`; }
+  } else {
+    const per = rnd(2, 3); nf = per * 3; part = {}; rowNames = [];
+    names.forEach((p, j) => { part[p] = [...Array(per)].map((_, i) => j * per + i); for (let i = 0; i < per; i++) rowNames.push(`F${j * per + i + 1} (${p})`); });
+    polTxt = `Asignación <b>fija con reparto equitativo</b> y reemplazo <b>local</b>, ${nf} marcos (${per} por proceso).`;
+  }
+  const res = runAll(refs, nf, algo, part, opts);
+  const per = {}; res.steps.forEach(s => { if (s.fault) per[s.ref.p] = (per[s.ref.p] || 0) + 1; });
+  MP = { algo, nf, part, rowNames, refs, res, opts, perProc: `<p class="mono">Por proceso → ${names.map(p => `${p}: ${per[p] || 0}`).join(' · ')}</p>` };
+  $('#mp-enun').innerHTML = `<p>Páginas que necesita cada proceso:</p><ul>` +
+    names.map(p => `<li><b class="${PC[p]}">${p}</b>: <span class="mono">${procs[p].join(', ')}</span></li>`).join('') + `</ul><p>Secuencia de ejecución:</p><ol class="cols">` +
+    sched.map(e => `<li><b class="${PC[e[0]]}">${e[0]}</b> ${e[1] === 'END' ? 'termina' : e[1] === 'MOD' ? `modifica la página ${e[2]}` : `demanda ${e[1]} página${e[1] > 1 ? 's' : ''}`}</li>`).join('') +
+    `</ol><p>${polTxt} Algoritmo: <b>${ALG[algo]}</b>. ¿Cuántos fallos de página se producen?</p>`;
+  replMode('mp', MP, $('#mp-mode').value);
+}
+
+// ===================== Ej. 7–8 · Utilización =====================
+function genUtil() {
+  const kind = pick(['thr', 'ok', 'idle']);
+  const cpu = kind === 'ok' ? rnd(78, 95) : rnd(5, 25);
+  const pag = kind === 'thr' ? rnd(90, 99) : rnd(1, 8);
+  const io = rnd(2, 12);
+  const mp = rnd(3, 8);
+  $('#ut-enun').innerHTML = `<p>Sistema con paginación por demanda, reemplazo global LRU y reparto equitativo. Nivel de multiprogramación: <b>${mp}</b>. Mediciones:</p>
+  <table class="data"><tr><th>Utilización de CPU</th><th>Dispositivo de paginación</th><th>Otros dispositivos de E/S</th></tr><tr><td>${cpu}%</td><td>${pag}%</td><td>${io}%</td></tr></table>`;
+  const D = { thr: 'Hiperpaginación (thrashing)', ok: 'Funcionamiento normal: la CPU está bien aprovechada', idle: 'Sistema poco cargado: hay pocos procesos listos' };
+  const items = [
+    { label: '¿Qué sucede?', kind: 'sel', opts: shuffle(Object.values(D)), ans: D[kind] },
+    { label: '¿Se puede aumentar la multiprogramación para subir el uso de CPU?', kind: 'sel', opts: ['Sí', 'Sí, pero con poco margen', 'No'], ans: kind === 'thr' ? 'No' : kind === 'ok' ? 'Sí, pero con poco margen' : 'Sí' },
+    { label: '¿La paginación está ayudando al rendimiento?', kind: 'sel', opts: ['Sí', 'No'], ans: kind === 'thr' ? 'No' : 'Sí' },
+  ];
+  const ACT = ['Instalar un procesador más rápido', 'Instalar un dispositivo de paginación más grande', 'Incrementar el grado de multiprogramación', 'Instalar más memoria principal', 'Decrementar el quantum', 'Disminuir el grado de multiprogramación (suspender procesos)'];
+  const good = kind === 'thr' ? [3, 5] : kind === 'idle' ? [2] : null;
+  const expl = {
+    thr: 'La CPU está casi ociosa y el dispositivo de paginación saturado: los procesos pasan el tiempo esperando páginas. Es <b>thrashing</b>. Subir la multiprogramación lo empeora (menos marcos por proceso). Solo ayuda lo que reduce los fallos: <b>más memoria</b> o <b>menos procesos</b>. Una CPU más rápida no sirve porque está esperando; un disco de paginación más grande da capacidad, no velocidad; el quantum no cambia cuántas páginas hay en memoria.',
+    ok: 'La CPU está bien usada y casi no hay paginación: el sistema está sano y la paginación permite tener varios procesos en memoria. Se podría subir un poco la multiprogramación, pero el margen es chico (la CPU ya está muy ocupada).',
+    idle: 'Ni la CPU ni la paginación están ocupadas: faltan procesos listos para ejecutar (o esperan otra E/S). Como sobra memoria y CPU, <b>aumentar la multiprogramación</b> sube el uso de la CPU. La paginación no es el problema.'
+  }[kind];
+  const root = $('#ut-q');
+  qform(root, items, expl + (good ? `<br><br><b>Acciones que mejoran la CPU:</b> ${good.map(i => ACT[i]).join('; ')}.` : ''));
+  if (good) {
+    const box = document.createElement('div');
+    box.innerHTML = `<h4>¿Cuáles de estas acciones mejoran la utilización del procesador? (marcá todas las que correspondan)</h4>` +
+      ACT.map((a, i) => `<label class="chk"><input type="checkbox" value="${i}"> ${a}</label>`).join('');
+    root.insertBefore(box, $('.ctrl', root));
+    const oldChk = $('.chk.btn', root) || $('.btn.chk', root);
+    const prev = oldChk.onclick;
+    oldChk.onclick = () => {
+      prev();
+      const sel = $$('input[type=checkbox]', box).filter(c => c.checked).map(c => +c.value).sort();
+      const ok = sameSet(sel, good.slice().sort());
+      $$('label.chk', box).forEach((l, i) => { l.classList.remove('ok', 'bad'); if (good.includes(i)) l.classList.add('ok'); else if ($('input', l).checked) l.classList.add('bad'); });
+      $('.fbx', root).innerHTML += `<div class="fb ${ok ? 'ok' : 'bad'}">Acciones: ${ok ? 'correcto' : 'revisá las marcadas en verde (correctas) y rojo (incorrectas)'}.</div>`;
+    };
+  }
+}
+
+// ===================== Ej. 9 · Matrices =====================
+function genMat() {
+  let N, es, ps, epp;
+  do { N = pick([16, 32, 64, 128]); es = pick([4, 4, 8]); ps = pick([256, 512, 1024, 2048, 4096]); epp = ps / es; }
+  while (epp < N || epp % N !== 0 || N * N * es <= ps);
+  const rpp = epp / N, P = N * N * es / ps;
+  const type = es === 4 ? 'int' : 'double';
+  $('#mx-enun').innerHTML = `<pre class="code">#define Size ${N}
+${type} A[Size][Size], B[Size][Size], C[Size][Size];
+register int i, j;
+for (j = 0; j &lt; Size; j++)
+    for (i = 0; i &lt; Size; i++)
+        C[i][j] = A[i][j] + B[i][j];</pre>
+  <p>Páginas de <b>${ps} bytes</b>, cada ${type} ocupa <b>${es} bytes</b>, las matrices se guardan por filas. El proceso tiene 4 marcos: 1 para el código (ya cargado) y 1 para cada matriz. i y j están en registros.</p>`;
+  qform($('#mx-q'), [
+    { label: 'Elementos por página', kind: 'int', ans: epp },
+    { label: 'Filas por página', kind: 'int', ans: rpp },
+    { label: 'Páginas por matriz', kind: 'int', ans: P },
+    { label: 'Fallos de página del programa tal como está', kind: 'int', ans: 3 * N * P },
+    { label: 'Fallos si se intercambian los bucles (i afuera, j adentro)', kind: 'int', ans: 3 * P },
+  ], `${ps} / ${es} = <b>${epp}</b> elementos por página = ${epp} / ${N} = <b>${rpp}</b> fila${rpp > 1 ? 's' : ''} por página. Cada matriz: ${N}×${N}×${es} / ${ps} = <b>${P}</b> páginas.<br>
+  El bucle interno recorre <b>i (filas)</b>: dentro de una columna cambiás de página cada ${rpp} fila${rpp > 1 ? 's' : ''}, o sea que cada columna recorre las ${P} páginas de cada matriz. Con un solo marco por matriz, en cada columna se vuelven a traer todas: ${N} columnas × ${P} páginas × 3 matrices = <b>${3 * N * P}</b> fallos.<br>
+  Intercambiando los bucles se recorre por filas y cada página se trae una sola vez: ${P} × 3 = <b>${3 * P}</b> fallos.`);
+}
+
+// ===================== Ej. 10 a–c · Working set =====================
+function refString(T, maxp) { return locSeq(T, maxp, .45); }
+function refTable(rows) {
+  const T = rows[0][1].length;
+  return '<div class="scroll"><table class="trace"><thead><tr><th class="rowh">t</th>' + [...Array(T)].map((_, i) => `<th>${i + 1}</th>`).join('') + '</tr></thead><tbody>' +
+    rows.map(([name, s, hl]) => `<tr><th class="rowh">${name}</th>` + s.map((x, i) => `<td class="${hl && hl(i) ? 'new' : ''}">${x}</td>`).join('') + '</tr>').join('') + '</tbody></table></div>';
+}
+function genWS() {
+  const T = rnd(22, 30), D = rnd(3, 6);
+  const A = refString(T, 6), B = refString(T, 6);
+  const t = rnd(D + 2, T);
+  const ws = s => [...new Set(s.slice(t - D, t))].sort((a, b) => a - b);
+  const wa = ws(A), wb = ws(B), sum = wa.length + wb.length;
+  const fYes = rnd(Math.max(1, sum - 3), sum - 1), fNo = rnd(sum, sum + 3);
+  $('#ws-enun').innerHTML = `<p>Referencias de los procesos A y B en cada instante:</p>` + refTable([['A', A], ['B', B]]) +
+    `<p>Ventana <b>Δ = ${D}</b>. Calculá el working set de cada proceso en el instante <b>t = ${t}</b> (escribí las páginas separadas por coma).</p>`;
+  qform($('#ws-q'), [
+    { label: `WS<sub>A</sub>(${t})`, kind: 'set', ans: wa, ph: 'ej: 1, 3, 4' },
+    { label: `WS<sub>B</sub>(${t})`, kind: 'set', ans: wb, ph: 'ej: 2, 5' },
+    { label: '|WS<sub>A</sub>| + |WS<sub>B</sub>|', kind: 'int', ans: sum },
+    { label: `¿Hay thrashing con ${fYes} marcos?`, kind: 'sel', opts: ['Sí', 'No'], ans: 'Sí' },
+    { label: `¿Hay thrashing con ${fNo} marcos?`, kind: 'sel', opts: ['Sí', 'No'], ans: 'No' },
+  ], `La ventana son los instantes ${t - D + 1} a ${t}.<br>A: ${A.slice(t - D, t).join(', ')} → WS<sub>A</sub> = {${wa.join(', ')}} (${wa.length} páginas).<br>
+  B: ${B.slice(t - D, t).join(', ')} → WS<sub>B</sub> = {${wb.join(', ')}} (${wb.length} páginas).<br>Demanda total: ${sum} marcos. Con ${fYes} marcos (&lt; ${sum}) hay <b>thrashing</b>; con ${fNo} (≥ ${sum}) no.` +
+    refTable([['A', A, i => i >= t - D && i < t], ['B', B, i => i >= t - D && i < t]]));
+}
+
+// ===================== Ej. 10 d–e, 11 · PFF =====================
+function genPFF() {
+  // Parte A: tasa de fallos con FIFO
+  const T = rnd(28, 36), k = rnd(3, 4), W = 10;
+  const S = refString(T, k + 3);
+  const res = runAll(mkSingle(S), k, 'FIFO');
+  const t = rnd(16, T);
+  const faults = res.steps.slice(t - W, t).filter(s => s.fault).length;
+  let inf = rnd(2, 4), sup = inf + rnd(2, 3);
+  const act = faults > sup ? 'Asignarle más marcos' : faults < inf ? 'Quitarle marcos' : 'No hacer nada';
+  $('#pf-enun').innerHTML = `<p>Referencias del proceso A (empieza sin páginas en memoria):</p>` + refTable([['A', S]]) +
+    `<p>A tiene <b>${k} marcos</b> y se usa <b>FIFO</b>. La tasa de fallos se calcula contando los fallos de las <b>últimas ${W} unidades de tiempo</b>. Cotas de PFF: inferior <b>${inf}</b>, superior <b>${sup}</b>.</p>`;
+  qform($('#pf-q'), [
+    { label: `Fallos en la ventana que termina en t = ${t}`, kind: 'int', ans: faults },
+    { label: '¿Qué hace el kernel con los marcos de A?', kind: 'sel', opts: ['Asignarle más marcos', 'Quitarle marcos', 'No hacer nada'], ans: act },
+  ], `Ventana: instantes ${t - W + 1} a ${t} → <b>${faults}</b> fallos. ${faults > sup ? `${faults} &gt; ${sup} (cota superior): le faltan marcos → <b>asignarle más</b>.` : faults < inf ? `${faults} &lt; ${inf} (cota inferior): tiene marcos de más → <b>quitarle</b>.` : `Está entre las cotas → <b>no hacer nada</b>.`}` +
+    LEGEND + traceTable(res.steps, k, 'FIFO') + `<p>Fila PF de la ventana: ${res.steps.slice(t - W, t).map((s, i) => `t${t - W + 1 + i}:${s.fault ? 'X' : '·'}`).join(' ')}</p>`);
+  // Parte B: escenarios PFF tipo ej. 11
+  const OPT = {
+    A: 'Asignar frames libres a los procesos que superan la cota superior',
+    B: 'Quitar frames a los procesos bajo la cota inferior y dárselos a los que superan la superior',
+    C: 'Suspender (swap out) procesos: no hay de dónde sacar frames',
+    D: 'Quitar frames a los procesos bajo la cota inferior (y se podría aumentar la multiprogramación)',
+    E: 'No hace falta ninguna acción'
+  };
+  const lo = 0.3, hi = 0.6, meta = pick([0, 0, 20]);
+  const scen = [...Array(3)].map(() => {
+    const style = pick(['hi', 'lo', 'mix', 'ok']);
+    const ps = [...Array(8)].map(() => {
+      const r = style === 'hi' ? pick([0.5, 0.6, 0.7, 0.7, 0.8, 0.9]) : style === 'lo' ? pick([0.1, 0.1, 0.2, 0.2, 0.3, 0.4]) : style === 'ok' ? pick([0.3, 0.4, 0.5, 0.6]) : pick([0.1, 0.2, 0.4, 0.5, 0.7, 0.8]);
+      return r;
+    });
+    const fl = pick([0, 0, 15, 50, 100, 150]);
+    const high = ps.filter(p => p > hi).length, low = ps.filter(p => p < lo).length;
+    const needFree = meta && fl < meta;
+    let ans;
+    if (high) ans = fl > 0 && !needFree ? 'A' : low ? 'B' : 'C';
+    else ans = low ? 'D' : needFree ? 'C' : 'E';
+    return { ps, fl, high, low, ans, needFree };
+  });
+  $('#pf2-enun').innerHTML = `<p>PFF con cota inferior <b>${lo}</b> y superior <b>${hi}</b> (tasa de fallos p entre 0 y 1).${meta ? ` Además, el kernel quiere tener al menos <b>${meta} frames libres</b>.` : ''}</p>
+  <div class="scroll"><table class="data"><tr><th>Escenario</th>${[...Array(8)].map((_, i) => `<th>P${i + 1}</th>`).join('')}<th>Frames libres</th></tr>` +
+    scen.map((s, i) => `<tr><td>${i + 1}</td>${s.ps.map(p => `<td>${String(p).replace('.', ',')}</td>`).join('')}<td>${s.fl}</td></tr>`).join('') + '</table></div>';
+  qform($('#pf2-q'), scen.map((s, i) => ({ label: `Escenario ${i + 1}: acción del kernel`, kind: 'sel', opts: Object.values(OPT), ans: OPT[s.ans] })),
+    '<ol>' + scen.map(s => `<li>${s.high} proceso(s) con p &gt; ${hi}, ${s.low} con p &lt; ${lo}, ${s.fl} frames libres${s.needFree ? ` (por debajo de la meta de ${meta})` : ''} → <b>${OPT[s.ans]}</b>.</li>`).join('') + '</ol>' +
+    'Regla: si hay procesos por encima de la cota superior se les dan frames libres; si no hay libres (o hay que cuidar la meta) se sacan de los que están por debajo de la inferior; si tampoco hay, se suspende algún proceso. Si nadie supera la cota superior pero hay procesos por debajo de la inferior, se les quitan frames. Si todos están entre las cotas, no se hace nada.');
+}
+
+// ===================== Ej. 12–14, 22 · Capacidad y tiempos =====================
+function genDisk() {
+  const platos = rnd(2, 8), caras = platos * 2, cil = pick([800, 1000, 1100, 1500, 2000, 2500]);
+  const spt = pick([100, 200, 300, 500, 700]), ss = pick([256, 512, 512, 1024]);
+  const rpm = pick([5400, 7200, 9000, 10000, 12600, 15000]);
+  const seek = pick([2, 3.5, 5, 8, 10, 10.5, 12]);
+  const bits = Math.random() < .4, rate = pick(bits ? [15, 50, 100, 200] : [10, 50, 100, 146]);
+  const X = rnd(1, 600), k = pick([4, 8, 16]);
+  const cap = caras * cil * spt * ss;
+  const lat = 60000 / rpm / 2;
+  const tr = ss * (bits ? 8 : 1) / (rate * mib) * 1000;
+  const sec = Math.ceil(X * mib / ss);
+  $('#dk-enun').innerHTML = `<ul><li>${platos} platos con 2 caras utilizables cada uno</li><li>${cil} cilindros, ${spt} sectores por pista, sectores de ${ss} bytes</li>
+  <li>Seek time de ${fmt(seek)} ms · ${rpm} RPM</li><li>Velocidad de transferencia de ${rate} ${bits ? 'Mib/s (Mebi<b>bits</b> por segundo)' : 'MiB/s (Mebi<b>bytes</b> por segundo)'}</li></ul>
+  <p class="lead">Podés usar coma decimal. Se aceptan pequeñas diferencias por redondeo.</p>`;
+  qform($('#dk-q'), [
+    { label: 'Capacidad total', kind: 'num', ans: cap, unit: 'bytes', rel: 1e-9 },
+    { label: 'Capacidad total', kind: 'num', ans: cap / 2 ** 30, unit: 'GiB', rel: 0.01 },
+    { label: `Sectores necesarios para ${X} MiB`, kind: 'int', ans: sec },
+    { label: 'Latencia (media vuelta)', kind: 'num', ans: lat, unit: 'ms', rel: 0.01 },
+    { label: 'Tiempo de transferencia de 1 sector', kind: 'num', ans: tr, unit: 'ms', rel: 0.03 },
+    { label: `Leer 1 cluster de ${k} sectores contiguos`, kind: 'num', ans: seek + lat + k * tr, unit: 'ms', rel: 0.01 },
+    { label: `Leer ${k} sectores individuales (aleatorio)`, kind: 'num', ans: k * (seek + lat + tr), unit: 'ms', rel: 0.01 },
+  ], `<b>Capacidad</b> = caras × cilindros × sectores × tamaño = ${caras} × ${cil} × ${spt} × ${ss} = <b>${cap.toLocaleString('es-AR')} B</b> = ${fmt(cap / 2 ** 30, 3)} GiB.<br>
+  <b>Sectores</b> para ${X} MiB = ⌈${X} × 1.048.576 / ${ss}⌉ = <b>${sec}</b>.<br>
+  <b>Latencia</b> = 60.000 ms / ${rpm} / 2 = <b>${fmt(lat)} ms</b>.<br>
+  <b>Transferencia</b>: ${rate} ${bits ? 'Mib' : 'MiB'} = ${(rate * mib).toLocaleString('es-AR')} ${bits ? 'bits' : 'bytes'} por segundo; un sector = ${bits ? ss * 8 + ' bits' : ss + ' bytes'} → ${bits ? ss * 8 : ss} / ${(rate * mib).toLocaleString('es-AR')} × 1000 = <b>${fmt(tr, 5)} ms</b>.<br>
+  <b>Cluster contiguo</b> (secuencial) = seek + latencia + ${k} × transferencia = ${fmt(seek)} + ${fmt(lat)} + ${k} × ${fmt(tr, 5)} = <b>${fmt(seek + lat + k * tr)} ms</b>.<br>
+  <b>Sectores sueltos</b> (aleatorio) = ${k} × (seek + latencia + transferencia) = <b>${fmt(k * (seek + lat + tr))} ms</b>. El cluster ahorra ${k - 1} posicionamientos y latencias.`);
+}
+
+// ===================== Ej. 15 · CHS ↔ LBA =====================
+function genCHS() {
+  const C = pick([512, 1000, 1020, 1024, 2048]), H = pick([4, 8, 16, 32]), S = pick([17, 32, 63]);
+  const tot = C * H * S, spc = H * S;
+  const toL = (c, h, s) => (c * H + h) * S + (s - 1);
+  const chs = [[rnd(0, C - 1), rnd(0, H - 1), rnd(1, S)], [rnd(0, 3), rnd(0, H - 1), rnd(1, S)]];
+  const lbas = [rnd(1, spc * 3), rnd(spc, tot - 1)];
+  const toC = L => [Math.floor(L / spc), Math.floor((L % spc) / S), (L % spc) % S + 1];
+  $('#ch-enun').innerHTML = `<p>Disco con <b>${C} cilindros</b>, <b>${H} cabezas</b> y <b>${S} sectores por pista</b>.</p>
+  <div class="formula">LBA = (C × Nheads + H) × Nsectors + (S − 1)</div>`;
+  const items = [{ label: 'Total de sectores', kind: 'int', ans: tot }];
+  chs.forEach(([c, h, s]) => items.push({ label: `LBA de (${c}, ${h}, ${s})`, kind: 'int', ans: toL(c, h, s) }));
+  lbas.forEach(L => { const [c, h, s] = toC(L); items.push({ label: `LBA ${L} → C`, kind: 'int', ans: c }, { label: `LBA ${L} → H`, kind: 'int', ans: h }, { label: `LBA ${L} → S`, kind: 'int', ans: s }); });
+  qform($('#ch-q'), items, `Total = ${C} × ${H} × ${S} = <b>${tot.toLocaleString('es-AR')}</b> sectores (LBA 0 a ${tot - 1}). Sectores por cilindro = ${H} × ${S} = ${spc}.<ul>` +
+    chs.map(([c, h, s]) => `<li>(${c}, ${h}, ${s}) → (${c}×${H} + ${h}) × ${S} + ${s - 1} = <b>${toL(c, h, s)}</b></li>`).join('') +
+    lbas.map(L => { const [c, h, s] = toC(L); return `<li>LBA ${L}: C = ${L} div ${spc} = ${c}; resto ${L % spc} → H = ${L % spc} div ${S} = ${h}; S = ${L % spc} mod ${S} + 1 = ${s} → <b>(${c}, ${h}, ${s})</b></li>`; }).join('') + '</ul>');
+}
+
+// ===================== Ej. 16–19 · Planificación de disco =====================
+const DALG = { FCFS: 'FCFS', SSTF: 'SSTF', SCAN: 'SCAN', LOOK: 'LOOK', CSCAN: 'C-SCAN', CLOOK: 'C-LOOK' };
+let DS;
+function diskSVG(head, moves, nt) {
+  const W = 760, padX = 20, rowH = 26, H = (moves.length + 1) * rowH + 30;
+  const x = t => padX + t / (nt - 1) * (W - 2 * padX);
+  let s = `<svg viewBox="0 0 ${W} ${H}" class="dsvg" xmlns="http://www.w3.org/2000/svg"><line x1="${padX}" y1="12" x2="${W - padX}" y2="12" stroke="#9aa3b2"/>
+  <text x="${padX}" y="9" font-size="10" fill="#5b6475">0</text><text x="${W - padX}" y="9" font-size="10" text-anchor="end" fill="#5b6475">${nt - 1}</text>`;
+  let px = x(head), py = 30;
+  s += `<circle cx="${px}" cy="${py}" r="4" fill="#16263a"/><text x="${px + 6}" y="${py - 5}" font-size="11">${head}</text>`;
+  moves.forEach((m, i) => {
+    const nx = x(m.to), ny = 30 + (i + 1) * rowH;
+    s += `<line x1="${px}" y1="${py}" x2="${nx}" y2="${ny}" stroke="${m.kind === 'jump' ? '#b4532a' : '#1f5f8b'}" stroke-width="1.6" ${m.kind === 'jump' ? 'stroke-dasharray="5 4"' : ''}/>`;
+    s += `<circle cx="${nx}" cy="${ny}" r="4" fill="${m.kind === 'req' ? '#c0392b' : '#b4532a'}"/><text x="${nx + 6}" y="${ny - 5}" font-size="11">${m.to}${m.kind === 'jump' ? ' (salto)' : m.kind === 'edge' ? ' (extremo)' : ''}</text>`;
+    px = nx; py = ny;
+  });
+  return s + '</svg>';
+}
+function genSched() {
+  let algo = $('#sc-alg').value; if (algo === 'R') algo = pick(Object.keys(DALG));
+  const nt = pick([100, 200, 300]);
+  const head = rnd(Math.floor(nt * .2), Math.floor(nt * .8)); let prev = head + pick([-1, 1]) * rnd(3, 20); prev = Math.max(0, Math.min(nt - 1, prev));
+  if (prev === head) prev = head - 1;
+  const q = [...Array(rnd(7, 11))].map(() => rnd(0, nt - 1));
+  if (Math.random() < .4) q.splice(rnd(0, q.length), 0, pick(q));
+  const arr = [];
+  if ($('#sc-arr').checked) {
+    arr.push([rnd(2, 4) * 10, [...Array(rnd(2, 4))].map(() => rnd(0, nt - 1))]);
+    if (Math.random() < .5) arr.push([arr[0][0] + rnd(3, 6) * 10, [...Array(rnd(2, 4))].map(() => rnd(0, nt - 1))]);
+  }
+  const r = diskRun(algo, head, prev, q, nt, arr);
+  DS = { algo, nt, head, prev, q, arr, r };
+  $('#sc-enun').innerHTML = `<p>Disco de <b>${nt} pistas</b> (0 a ${nt - 1}). La cabeza está en la pista <b>${head}</b> y antes atendió la <b>${prev}</b>.</p>
+  <p>Cola de requerimientos: <span class="mono"><b>{${q.join(', ')}}</b></span></p>` +
+    arr.map(([n, t]) => `<p>Después de <b>${n} movimientos</b> llegan: <span class="mono"><b>{${t.join(', ')}}</b></span></p>`).join('') +
+    `<p>Algoritmo: <b>${DALG[algo]}</b>. ¿Cuántos movimientos de cabeza hacen falta para atender todo?</p>`;
+  schedMode();
+}
+function schedSolution() {
+  const { r, head, nt, algo } = DS;
+  const rows = r.moves.map((m, i) => `<tr><td>${i + 1}</td><td>${m.from} → ${m.to}${m.kind === 'jump' ? ' <small>(salto)</small>' : m.kind === 'edge' ? ' <small>(extremo)</small>' : ''}</td><td>${m.kind === 'jump' ? '0 <small>(no se cuenta)</small>' : m.cost}</td><td>${m.total}</td><td class="l">${m.arrived.length ? 'antes de decidir llegaron {' + m.arrived.join(', ') + '}' : ''}</td></tr>`).join('');
+  return `<p><span class="result">${r.total} movimientos</span> &nbsp; Dirección inicial: ${DS.prev < head ? 'subiendo (hacia ' + (nt - 1) + ')' : 'bajando (hacia 0)'}${['FCFS', 'SSTF'].includes(algo) ? ' (no importa para este algoritmo)' : ''}.</p>
+  ${diskSVG(head, r.moves, nt)}
+  <details open><summary>Tramo por tramo</summary><table class="data"><tr><th>#</th><th>Tramo</th><th>Movimientos</th><th>Acumulado</th><th>Llegadas</th></tr>${rows}</table></details>`;
+}
+function schedMode() {
+  const w = $('#sc-work');
+  if ($('#sc-mode').value === 'count') {
+    w.innerHTML = `<div class="ctrl"><label>Movimientos totales<input type="number" class="ans"></label><button class="btn chk">Corregir</button><button class="btn sec show">Ver solución</button></div><div class="fbx"></div><div class="solx"></div>`;
+    $('.chk', w).onclick = () => { const a = $('.ans', w); feedback($('.fbx', w), mark(a, +a.value === DS.r.total && a.value !== '') ? 1 : 0, 1); };
+    $('.show', w).onclick = () => { $('.solx', w).innerHTML = schedSolution(); };
+    return;
+  }
+  // paso a paso: el alumno elige la próxima pista
+  let i = 0, ok = 0, tot = 0, pos = DS.head, acc = 0;
+  const done = [];
+  function render(msg, cls) {
+    const m = DS.r.moves[i];
+    if (!m) {
+      w.innerHTML = `<div class="fb ok">¡Terminaste! Total: <b>${acc}</b> movimientos. Acertaste ${ok} de ${tot}.</div>` + diskSVG(DS.head, done, DS.nt);
+      return;
+    }
+    const cnt = {}; m.pending.forEach(t => cnt[t] = (cnt[t] || 0) + 1);
+    const opts = [...new Set([0, DS.nt - 1, ...m.pending])].sort((a, b) => a - b);
+    w.innerHTML = `${msg ? `<div class="fb ${cls}">${msg}</div>` : ''}
+      <div class="fb info">Cabeza en <b>${pos}</b> · acumulado <b>${acc}</b>${m.arrived.length ? ` · <b>Llegaron {${m.arrived.join(', ')}}</b>` : ''}. ¿A qué pista va ahora? <small>(los extremos sirven para SCAN y C-SCAN)</small></div>
+      <div class="tracks">${opts.map(t => `<button class="trk${cnt[t] ? '' : ' edge'}" data-t="${t}">${t}${cnt[t] > 1 ? ` <sup>×${cnt[t]}</sup>` : ''}${cnt[t] ? '' : ' <small>extremo</small>'}</button>`).join('')}</div>
+      <p class="score">Correctas: ${ok}/${tot}</p>${done.length ? diskSVG(DS.head, done, DS.nt) : ''}`;
+    $$('.trk', w).forEach(b => b.onclick = () => {
+      const t = +b.dataset.t; tot++;
+      const good = t === m.to; if (good) ok++;
+      const why = m.kind === 'jump' ? `salto a ${m.to} (no se cuenta)` : m.kind === 'edge' ? `ir hasta el extremo ${m.to}` : `atender ${m.to} (${m.cost} movimientos)`;
+      done.push(m); acc = m.total; pos = m.to; i++;
+      render(good ? `Correcto: ${why}.` : `No: lo correcto era ${why}.`, good ? 'ok' : 'bad');
+    });
+  }
+  render();
+}
+
+// ===================== Ej. 20–21 · Clusters =====================
+function genClus() {
+  const platos = rnd(2, 10), H = platos * 2, C = pick([200, 350, 500, 1000]), S = pick([63, 100, 250, 500]);
+  const c1 = pick([2, 4]), c2 = pick([8, 16]);
+  const tot = H * C * S;
+  const start = rnd(1, 40) * 8, cs = pick([4, 8, 16]);
+  const cl = shuffle([0, rnd(1, 200), rnd(201, 999), rnd(1000, 5000)]);
+  $('#cl-enun').innerHTML = `<p><b>a)</b> Disco con ${platos} platos de 2 caras útiles (${H} cabezas), ${C} cilindros y ${S} sectores por pista.</p>
+  <p><b>b)</b> Un sistema de archivos usa clusters de <b>${cs} sectores</b> y el cluster 0 empieza en el sector <b>LBA ${start}</b>.</p>`;
+  const items = [{ label: `a) Clusters de ${c1} sectores`, kind: 'int', ans: Math.floor(tot / c1) }, { label: `a) Clusters de ${c2} sectores`, kind: 'int', ans: Math.floor(tot / c2) }];
+  cl.forEach(k => items.push({ label: `b) Primer LBA del cluster ${k}`, kind: 'int', ans: start + k * cs }, { label: `b) Último LBA del cluster ${k}`, kind: 'int', ans: start + k * cs + cs - 1 }));
+  qform($('#cl-q'), items, `Total de sectores = ${H} × ${C} × ${S} = ${tot.toLocaleString('es-AR')}. Clusters de ${c1}: ${tot} div ${c1} = <b>${Math.floor(tot / c1)}</b>; de ${c2}: <b>${Math.floor(tot / c2)}</b>.<br>
+  Cluster k → LBA ${start} + k × ${cs} hasta ese valor + ${cs - 1}:<ul>` + cl.map(k => `<li>Cluster ${k}: ${start} + ${k}×${cs} = <b>${start + k * cs}</b> a <b>${start + k * cs + cs - 1}</b></li>`).join('') + '</ul>');
+}
+
+// ===================== Ej. 24, 26, 27 · I-nodos =====================
+function idxBlocks(D, st, n) {
+  let rem = D - Math.min(D, st.d), idx = 0;
+  for (let i = 0; i < st.s && rem > 0; i++) { idx += 1; rem -= Math.min(rem, n); }
+  for (let i = 0; i < st.db && rem > 0; i++) { const take = Math.min(rem, n * n); idx += 1 + Math.ceil(take / n); rem -= take; }
+  for (let i = 0; i < st.t && rem > 0; i++) { const take = Math.min(rem, n ** 3); idx += 1 + Math.ceil(take / (n * n)) + Math.ceil(take / n); rem -= take; }
+  return rem > 0 ? null : idx;
+}
+function genInode() {
+  const B = pick([512, 1024, 2048, 4096]), ab = pick([32, 32, 64]), n = B / (ab / 8);
+  const st = pick([{ d: 10, s: 1, db: 1, t: 1 }, { d: 10, s: 1, db: 2, t: 0 }, { d: 12, s: 1, db: 1, t: 1 }]);
+  const maxBlocks = st.d + st.s * n + st.db * n * n + st.t * n ** 3;
+  const maxKiB = maxBlocks * B / 1024;
+  const ranges = [[1, st.d], [st.d + 1, st.d + st.s * n], [st.d + st.s * n + 1, st.d + st.s * n + n * rnd(2, 5)]];
+  const files = ranges.map(([lo, hi], i) => {
+    const D = rnd(lo, hi);
+    const kib = Math.max(1, Math.ceil(((D - 1) * B + rnd(1, B)) / 1024));
+    const Dr = Math.ceil(kib * 1024 / B);
+    return { name: 'Archivo' + 'ABC'[i], kib, D: Dr, idx: idxBlocks(Dr, st, n) };
+  });
+  const seek = pick([5, 8, 10.5]), rpm = pick([7200, 10000, 15000]), rate = pick([50, 100, 146]);
+  const lat = 60000 / rpm / 2, trB = B / (rate * mib) * 1000;
+  const f = files[1], units = f.D + f.idx, tFile = units * (seek + lat + trB);
+  const desc = `${st.d} directas, ${st.s} indirecta simple, ${st.db} indirecta${st.db > 1 ? 's' : ''} doble${st.db > 1 ? 's' : ''}${st.t ? `, ${st.t} indirecta triple` : ''}`;
+  $('#in-enun').innerHTML = `<p>I-nodo con <b>${desc}</b>. Unidad de asignación: bloques de <b>${B} bytes</b>; direcciones de <b>${ab} bits</b>.</p>
+  <p>Archivos: ${files.map(x => `<b>${x.name}</b> de ${x.kib} KiB`).join(', ')}.</p>
+  <p>Para el tiempo: disco con seek de ${fmt(seek)} ms, ${rpm} RPM y ${rate} MiB/s; cada bloque está en una posición aleatoria y se cuentan también los bloques de índice.</p>`;
+  const items = [
+    { label: 'Direcciones por bloque', kind: 'int', ans: n },
+    { label: 'Tamaño máximo de un archivo', kind: 'num', ans: maxKiB, unit: 'KiB', rel: 1e-6 },
+  ];
+  files.forEach(x => items.push(
+    { label: `${x.name}: bloques de datos`, kind: 'int', ans: x.D },
+    { label: `${x.name}: bloques de índice`, kind: 'int', ans: x.idx },
+    { label: `${x.name}: tamaño físico de los datos`, kind: 'num', ans: x.D * B / 1024, unit: 'KiB', rel: 1e-6 },
+    { label: `${x.name}: fragmentación interna`, kind: 'num', ans: x.D * B / 1024 - x.kib, unit: 'KiB', rel: 1e-6 }));
+  items.push({ label: `Tiempo de leer ${f.name} (datos + índices, aleatorio)`, kind: 'num', ans: tFile, unit: 'ms', rel: 0.01 });
+  const explain = x => {
+    let r = x.D - Math.min(x.D, st.d), parts = [`${Math.min(x.D, st.d)} por directas`];
+    if (r > 0) { const a = Math.min(r, st.s * n); parts.push(`${a} por la simple (1 bloque de índice)`); r -= a; }
+    if (r > 0) parts.push(`${r} por la doble (1 bloque de 1.er nivel + ${Math.ceil(r / n)} de 2.º nivel)`);
+    return parts.join(', ');
+  };
+  qform($('#in-q'), items, `n = ${B} / ${ab / 8} = <b>${n}</b> direcciones por bloque.<br>
+  Máximo = (${st.d} + ${st.s}·${n} + ${st.db}·${n}²${st.t ? ` + ${st.t}·${n}³` : ''}) × ${B} B = ${maxBlocks.toLocaleString('es-AR')} bloques × ${B} B = <b>${fmt(maxKiB, 3)} KiB</b> (${fmt(maxKiB / 1024, 2)} MiB).<ul>` +
+    files.map(x => `<li><b>${x.name}</b>: ⌈${x.kib} KiB / ${B} B⌉ = <b>${x.D}</b> bloques de datos (${explain(x)}) → <b>${x.idx}</b> de índice. Físico: ${x.D} × ${B} B = ${fmt(x.D * B / 1024, 3)} KiB; fragmentación = ${fmt(x.D * B / 1024 - x.kib, 3)} KiB.</li>`).join('') +
+    `</ul>Tiempo de ${f.name}: latencia = ${fmt(lat)} ms; transferencia de un bloque = ${B} / (${rate} × 1.048.576) × 1000 = ${fmt(trB, 5)} ms → (${fmt(seek)} + ${fmt(lat)} + ${fmt(trB, 5)}) × ${units} bloques = <b>${fmt(tFile, 2)} ms</b>.`);
+}
+
+// ===================== Ej. 28 · Ubicar i-nodo =====================
+function genLoc() {
+  const start = rnd(2, 10), ipb = pick([4, 8, 16, 24, 32]), sz = pick([64, 128, 256]);
+  const ins = [rnd(1, ipb), ipb + rnd(1, ipb), rnd(2 * ipb, 10 * ipb)];
+  const blk = i => Math.floor((i - 1) / ipb) + start, off = i => ((i - 1) % ipb) * sz;
+  $('#lo-enun').innerHTML = `<p>La lista de i-nodos empieza en el bloque <b>${start}</b>, hay <b>${ipb} i-nodos por bloque</b> y cada i-nodo ocupa <b>${sz} bytes</b>.</p>
+  <div class="formula">bloque = ((nro − 1) div ${ipb}) + ${start} · desplazamiento = ((nro − 1) mod ${ipb}) × ${sz}</div>`;
+  const items = [];
+  ins.forEach(i => items.push({ label: `I-nodo ${i}: bloque`, kind: 'int', ans: blk(i) }, { label: `I-nodo ${i}: desplazamiento`, kind: 'int', ans: off(i), unit: 'bytes' }));
+  qform($('#lo-q'), items, '<ul>' + ins.map(i => `<li>I-nodo ${i}: (${i - 1} div ${ipb}) + ${start} = <b>${blk(i)}</b>; (${i - 1} mod ${ipb}) × ${sz} = <b>${off(i)}</b></li>`).join('') + '</ul>');
+}
+
+// ===================== Ej. 29 · Buffer cache =====================
+function genBC() {
+  const N = pick([4, 5]);
+  const blocks = shuffle([...Array(150)].map((_, i) => i + 1)).slice(0, rnd(11, 14));
+  const empty = Math.random() < .15;
+  const bufs = blocks.map(b => ({ b, busy: empty ? true : Math.random() < .3, dw: false }));
+  const free = shuffle(bufs.filter(x => !x.busy));
+  free.forEach(x => x.dw = Math.random() < .35);
+  if (free.length && Math.random() < .55) free[0].dw = true;
+  if (free.length && free.every(x => x.dw)) free[free.length - 1].dw = false;
+  const pos = new Map(free.map((x, i) => [x.b, i + 1]));
+  const absent = shuffle([...Array(150)].map((_, i) => i + 1).filter(b => !blocks.includes(b)));
+  const reqs = shuffle([
+    ...(free.length ? [pick(free).b] : []),
+    ...(bufs.some(x => x.busy) ? [pick(bufs.filter(x => x.busy)).b] : []),
+    absent[0], absent[1]
+  ]).slice(0, 4);
+  const SC = {
+    1: '1: está en la hash queue y libre → se usa sin E/S',
+    2: '2: no está; se toma el primero de la free list (sin DW) y se lee del disco',
+    3: '3: no está; el primero de la free list tiene DW → escritura asincrónica y se sigue buscando',
+    4: '4: no está y la free list está vacía → el proceso duerme',
+    5: '5: está en la hash queue pero ocupado → el proceso duerme'
+  };
+  const firstClean = free.find(x => !x.dw);
+  const solve = b => {
+    const bf = bufs.find(x => x.b === b);
+    if (bf) return bf.busy ? { s: 5 } : { s: 1 };
+    if (!free.length) return { s: 4 };
+    if (free[0].dw) return { s: 3, reuse: firstClean.b, writes: free.slice(0, free.indexOf(firstClean)).map(x => x.b) };
+    return { s: 2, reuse: free[0].b, writes: [] };
+  };
+  const chip = x => `<span class="buf${x.busy ? ' busy' : ''}">${x.b}${x.dw ? '<sup>DW</sup>' : ''}${pos.has(x.b) ? `<em>${pos.get(x.b)}</em>` : ''}</span>`;
+  $('#bc-enun').innerHTML = `<p>Estado del buffer cache (<b>${N} hash queues</b>: el bloque b va a la cola <span class="mono">b mod ${N}</span>).
+  Los buffers con borde punteado están <b>ocupados</b>; el número chico indica su <b>posición en la free list</b>; DW = delayed write.</p>
+  <table class="data bc">${[...Array(N)].map((_, q) => `<tr><th>${q} mod ${N}</th><td class="l">${bufs.filter(x => x.b % N === q).map(chip).join(' ') || '<small>vacía</small>'}</td></tr>`).join('')}</table>
+  <p><b>Free list</b> (del principio al final): ${free.length ? free.map(x => `${x.b}${x.dw ? '<sup>DW</sup>' : ''}`).join(' → ') : '<i>vacía</i>'}</p>
+  <p>Cada pregunta parte de este mismo estado. ¿Qué sucede si un proceso P1 solicita el bloque…?</p>`;
+  const items = [];
+  const READ = ['Sí', 'No', 'No por ahora: el proceso duerme'];
+  reqs.forEach(b => {
+    const r = solve(b);
+    items.push({ label: `Bloque <b>${b}</b>: escenario`, kind: 'sel', opts: Object.values(SC), ans: SC[r.s] });
+    items.push({ label: `Bloque <b>${b}</b>: buffer que se reasigna`, kind: 'sel', opts: ['Ninguno', ...free.map(x => String(x.b))], ans: r.reuse ? String(r.reuse) : 'Ninguno' });
+    items.push({ label: `Bloque <b>${b}</b>: ¿se lee del disco?`, kind: 'sel', opts: READ, ans: r.s === 1 ? 'No' : r.s >= 4 ? READ[2] : 'Sí' });
+  });
+  qform($('#bc-q'), items, '<ol>' + reqs.map(b => {
+    const r = solve(b), q = b % N;
+    if (r.s === 1) return `<li><b>${b}</b>: ${b} mod ${N} = ${q}; está en esa cola y libre → se marca ocupado y se saca de la free list. Sin E/S.</li>`;
+    if (r.s === 5) return `<li><b>${b}</b>: está en la cola ${q} pero ocupado → P1 duerme hasta que ese buffer se libere.</li>`;
+    if (r.s === 4) return `<li><b>${b}</b>: no está en la cola ${q} y la free list está vacía → P1 duerme hasta que se libere cualquier buffer.</li>`;
+    const old = r.reuse % N;
+    return `<li><b>${b}</b>: no está en la cola ${q}. ${r.s === 3 ? `El primero de la free list (${r.writes.join(', ')}) tiene DW: se ${r.writes.length > 1 ? 'inician sus escrituras asincrónicas' : 'inicia su escritura asincrónica'} a disco (al terminar, vuelve${r.writes.length > 1 ? 'n' : ''} al principio de la free list) y se sigue con el siguiente. ` : ''}Se toma el buffer del bloque <b>${r.reuse}</b>: sale de la free list y de la cola ${old}, se asigna al bloque ${b}, pasa a la cola ${q} y se <b>lee el bloque ${b} del disco</b>.</li>`;
+  }).join('') + '</ol>');
+}
+
+// ===================== Teoría (ej. 3, 12, 13, 17, 23, 25 y repaso) =====================
+// a = índice de la opción correcta (las opciones se mezclan al mostrarlas)
+const QUIZ = {
+  mem: [
+    { q: 'Ordená de peor a mejor según la tasa de fallos (tendencia general):', o: ['FIFO, Segunda Chance, LRU, OPT', 'LRU, FIFO, Segunda Chance, OPT', 'OPT, LRU, Segunda Chance, FIFO', 'Segunda Chance, FIFO, OPT, LRU'], e: 'OPT es la cota óptima; LRU es la mejor aproximación práctica; Segunda Chance mejora a FIFO usando el bit R.' },
+    { q: '¿Cómo sabe el kernel que la página víctima fue modificada?', o: ['Por el bit M (dirty) de la tabla de páginas', 'Por el bit V', 'Comparando el marco con la copia en disco', 'Por el bit R'], e: 'El hardware pone M=1 al escribir. Si M=1, hay que escribir la página al swap antes de reutilizar el marco.' },
+    { q: '¿Qué acción adicional requiere una víctima con M = 1?', o: ['Escribirla en el área de intercambio antes de reutilizar el marco', 'Ninguna', 'Ponerle R = 0', 'Pasarla al final de la cola FIFO'], e: 'La copia en disco está desactualizada: hay una E/S extra (o se usa descarga asincrónica).' },
+    { q: '¿Qué combinación de políticas NO tiene sentido?', o: ['Asignación fija con reemplazo global', 'Asignación fija con reemplazo local', 'Asignación dinámica con reemplazo global', 'Asignación dinámica con reemplazo local'], e: 'Si un proceso puede quitarle marcos a otro, la cantidad de marcos deja de ser fija.' },
+    { q: '¿Qué algoritmo puede sufrir la anomalía de Belady?', o: ['FIFO', 'LRU', 'OPT', 'Ninguno'], e: 'LRU y OPT nunca empeoran al agregar marcos; FIFO sí puede.' },
+    { q: 'Convención de la cátedra: en Segunda Chance, al cargar una página su bit R queda en…', o: ['0', '1', 'Depende del bit M', 'No se modifica'], e: 'Al cargarla R=0; cuando se vuelve a referenciar pasa a 1 (*).' },
+    { q: '¿Por qué OPT no se usa en sistemas reales?', o: ['Requiere conocer las referencias futuras', 'Usa demasiados bits por página', 'Tiene más fallos que FIFO', 'Solo funciona con reemplazo local'], e: 'Se usa como referencia para comparar los algoritmos implementables.' },
+    { q: '¿Qué hace falta para implementar LRU de forma exacta?', o: ['Registrar en cada acceso el instante de la última referencia (o mantener una pila)', 'Solo una cola FIFO', 'Solo el bit M', 'Conocer el futuro'], e: 'Hay que actualizar información en cada referencia → soporte de hardware y mucho overhead.' },
+    { q: 'En la descarga asincrónica, ¿para qué se reserva un marco?', o: ['Para cargar la página nueva mientras la víctima modificada se escribe a disco', 'Para el código del kernel', 'Para la tabla de páginas', 'Para la página con R=1'], e: 'Cuando termina la escritura, el marco de la víctima pasa a ser el nuevo reservado.' },
+    { q: 'CPU al 15% y dispositivo de paginación al 98%. ¿Qué pasa?', o: ['Thrashing: hay que bajar la multiprogramación o agregar memoria', 'El sistema está sano', 'Hay que subir la multiprogramación', 'Hace falta una CPU más rápida'], e: 'Los procesos esperan páginas todo el tiempo: la CPU no tiene qué ejecutar.' },
+    { q: '¿Qué es el working set de un proceso?', o: ['El conjunto de páginas distintas referenciadas en las últimas Δ referencias', 'Todas las páginas del proceso', 'Las páginas con bit M = 1', 'Los marcos libres del sistema'], e: 'Su tamaño estima cuántos marcos necesita el proceso ahora.' },
+    { q: 'Con PFF, un proceso cuya tasa de fallos está por encima de la cota superior…', o: ['Necesita más marcos', 'Tiene marcos de más', 'Debe terminar', 'No necesita cambios'], e: 'Por encima de la superior se le dan marcos; por debajo de la inferior se le quitan.' },
+  ],
+  disk: [
+    { q: '¿Qué es un cilindro?', o: ['El conjunto de las n-ésimas pistas de todas las caras', 'Un plato con sus dos caras', 'Un grupo de sectores contiguos', 'La pista más externa'], e: 'Es lo que se puede leer sin mover el brazo.' },
+    { q: 'Seek time es…', o: ['El tiempo de posicionar la cabeza en el cilindro', 'El tiempo hasta que el sector pasa bajo la cabeza', 'El tiempo de pasar los datos a memoria', 'El tiempo de una vuelta completa'], e: 'Es el parámetro que más influye en el tiempo de acceso.' },
+    { q: 'Latency time es…', o: ['El tiempo desde que la cabeza está en el cilindro hasta que el sector pasa debajo', 'El tiempo de mover el brazo', 'El tiempo de transferencia', 'El tiempo de arranque del disco'], e: 'Si no se conoce, se toma media vuelta.' },
+    { q: 'Si la latencia no es dato, ¿cómo se estima para un disco de 6000 RPM?', o: ['5 ms (media vuelta)', '10 ms (una vuelta)', '6 ms', '0,1 ms'], e: '60.000 / 6000 = 10 ms por vuelta → media vuelta = 5 ms.' },
+    { q: 'Transfer time es…', o: ['El tiempo de pasar el sector (bloque) del disco a memoria', 'El tiempo de seek más la latencia', 'El tiempo de media vuelta', 'El tiempo de encolar el pedido'], e: 'Se calcula como tamaño / velocidad de transferencia.' },
+    { q: '¿Qué algoritmo de planificación puede causar inanición?', o: ['SSTF', 'FCFS', 'C-SCAN', 'C-LOOK'], e: 'Si siguen llegando pedidos cerca de la cabeza, uno lejano puede no atenderse nunca.' },
+    { q: 'En C-SCAN, el salto de un extremo al otro…', o: ['No se cuenta en los movimientos', 'Se cuenta completo', 'Se cuenta la mitad', 'No existe'], e: 'Convención de la cátedra: el salto no suma movimientos.' },
+    { q: 'Diferencia entre SCAN y LOOK:', o: ['LOOK solo llega hasta el último requerimiento en esa dirección; SCAN va hasta el extremo del disco', 'LOOK atiende en un solo sentido', 'SCAN elige siempre el más cercano', 'No hay diferencia'], e: 'Por eso LOOK suele hacer menos movimientos.' },
+    { q: 'Cola {10, 40, 70, 10} con FCFS: la pista 10…', o: ['Se atiende dos veces, en el orden en que aparece', 'Se atiende una sola vez', 'Se descarta el duplicado', 'Se atiende al final'], e: 'En el resto de los algoritmos los duplicados se atienden de forma consecutiva.' },
+    { q: '¿Cómo se determina la dirección inicial de la cabeza en SCAN/LOOK?', o: ['Comparando la pista actual con la pista atendida anteriormente', 'Siempre hacia 0', 'Siempre hacia la última pista', 'Hacia el requerimiento más cercano'], e: 'Si venía de una pista menor, sigue subiendo; si venía de una mayor, sigue bajando.' },
+    { q: '1 MiB es…', o: ['1.048.576 bytes', '1.000.000 bytes', '1024 bits', '8.388.608 bytes'], e: 'Prefijo binario: 2^20 bytes. MB (SI) = 10^6.' },
+    { q: 'Leer 16 sectores contiguos vs. 16 sectores dispersos:', o: ['Contiguos: un solo seek y una latencia; dispersos: 16 de cada uno', 'Tardan lo mismo', 'Los dispersos son más rápidos', 'Ambos requieren 16 seeks'], e: 'Secuencial: seek + latency + 16·transfer. Aleatorio: 16·(seek + latency + transfer).' },
+  ],
+  fs: [
+    { q: '¿Dónde se guarda el nombre de un archivo en System V?', o: ['En la entrada del directorio (nombre, nro de i-nodo)', 'En el i-nodo', 'En el superbloque', 'En el primer bloque de datos'], e: 'El i-nodo no tiene el nombre: por eso un archivo puede tener varios nombres (links duros).' },
+    { q: 'Renombrar un archivo en el mismo directorio modifica…', o: ['Solo la entrada del directorio', 'El i-nodo y los bloques de datos', 'El superbloque', 'La lista de i-nodos libres'], e: 'El i-nodo y los datos no cambian.' },
+    { q: 'Crear un link duro "L" a un archivo…', o: ['Agrega una entrada con el mismo nro de i-nodo y suma 1 al contador de links', 'Copia el i-nodo', 'Copia los bloques de datos', 'Crea un i-nodo nuevo que apunta al viejo'], e: 'Los dos nombres apuntan al mismo i-nodo.' },
+    { q: 'Al borrar un archivo cuyo contador de links pasa de 1 a 0…', o: ['Sus bloques y su i-nodo vuelven a las listas de libres', 'Solo se borra la entrada del directorio', 'El i-nodo queda ocupado', 'Se borra el directorio'], e: 'Si el contador queda > 0, solo se elimina la entrada.' },
+    { q: '¿Qué contiene el superbloque?', o: ['Información del FS y las listas de bloques e i-nodos libres', 'Los nombres de los archivos', 'El código de arranque', 'Los datos de los directorios'], e: 'El boot block tiene el arranque; los directorios tienen los nombres.' },
+    { q: 'Agregar contenido a un archivo modifica…', o: ['El i-nodo (direcciones, tamaño, fechas) y la lista de bloques libres', 'Solo el directorio', 'Solo el superbloque', 'Nada, si el archivo ya existe'], e: 'Si se superan las directas, también se usan bloques de índice indirectos.' },
+    { q: 'Con bloques de 1 KiB y direcciones de 32 bits, ¿cuántas direcciones entran en un bloque?', o: ['256', '1024', '32', '128'], e: '1024 B / 4 B = 256.' },
+    { q: 'En el buffer cache de System V, ¿en qué hash queue está el bloque 47 si hay 4 colas?', o: ['3 (47 mod 4)', '4', '11 (47 div 4)', '0'], e: 'La cola es bloque mod cantidad de colas.' },
+    { q: 'Se pide un bloque que no está en caché y el primero de la free list tiene DW. ¿Qué pasa?', o: ['Se inicia su escritura asincrónica y se toma el siguiente de la free list', 'Se usa ese buffer y se pierden los cambios', 'El proceso duerme', 'Se escribe sincrónicamente y se usa'], e: 'Es el escenario 3 de getblk.' },
+    { q: 'El bloque pedido está en su hash queue pero ocupado por otro proceso. ¿Qué pasa?', o: ['El proceso duerme hasta que ese buffer se libere', 'Se lee de nuevo del disco', 'Se toma otro buffer', 'Se aborta el proceso'], e: 'Escenario 5 de getblk.' },
+    { q: '¿En qué orden está la free list?', o: ['LRU: se toma del principio y se devuelve al final', 'Por número de bloque', 'FIFO por hash queue', 'Aleatorio'], e: 'Un buffer que terminó una escritura asincrónica vuelve al principio.' },
+    { q: '¿Qué significa DW en un buffer?', o: ['Delayed write: modificado y pendiente de escribir a disco', 'Disk wait', 'Directory write', 'Que está ocupado'], e: 'Antes de reutilizar un buffer con DW hay que escribirlo.' },
+  ]
+};
+function genQuiz() {
+  const t = $('#qz-topic').value;
+  const pool = t === 'all' ? [...QUIZ.mem, ...QUIZ.disk, ...QUIZ.fs] : QUIZ[t];
+  const qs = shuffle(pool).slice(0, 8);
+  $('#qz-list').innerHTML = qs.map((q, i) => {
+    const ord = shuffle(q.o.map((t, j) => ({ t, j })));
+    return `<div class="qcard"><div class="q">${i + 1}. ${q.q}</div>` +
+      ord.map(o => `<label data-j="${o.j}"><input type="radio" name="q${i}" value="${o.j}"> ${o.t}</label>`).join('') +
+      `<div class="exp">${q.e}</div></div>`;
+  }).join('');
+  $('#qz-fb').innerHTML = '';
+}
+function checkQuiz() {
+  let g = 0; const cards = $$('#qz-list .qcard');
+  cards.forEach(c => {
+    c.classList.add('done'); const sel = c.querySelector('input:checked');
+    c.querySelectorAll('label').forEach(l => { l.classList.remove('ok', 'bad'); if (+l.dataset.j === 0) l.classList.add('ok'); });
+    if (sel && +sel.value === 0) g++; else if (sel) sel.parentElement.classList.add('bad');
+  });
+  $('#qz-fb').innerHTML = `<div class="fb ${g === cards.length ? 'ok' : 'info'}">Puntaje: ${g} / ${cards.length}</div>`;
+}
+
+// ===================== enlaces =====================
+const GEN = { ad: genAddr, as: genAsig, rp: genRep, mp: genMulti, ut: genUtil, mx: genMat, ws: genWS, pf: genPFF, dk: genDisk, ch: genCHS, sc: genSched, cl: genClus, in: genInode, lo: genLoc, bc: genBC, qz: genQuiz };
+Object.entries(GEN).forEach(([k, f]) => { const b = $('#' + k + '-new'); if (b) b.onclick = f; });
+$('#rp-mode').onchange = () => replMode('rp', RP, $('#rp-mode').value);
+$('#mp-mode').onchange = () => replMode('mp', MP, $('#mp-mode').value);
+$('#mp-async').onchange = () => { $('#mp-pol').disabled = $('#mp-async').checked; genMulti(); };
+$('#sc-mode').onchange = schedMode;
+$('#qz-chk').onclick = checkQuiz;
+$('#qz-topic').onchange = genQuiz;
+Object.values(GEN).forEach(f => f());
+
+</script></body></html>
